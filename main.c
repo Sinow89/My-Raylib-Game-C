@@ -14,7 +14,6 @@ int main(void) {
     
     while (!WindowShouldClose()) {  
  
-        
         BeginDrawing();
         ClearBackground(BLACK);
         DrawCircle(200, 200, 10, BLUE);
@@ -23,13 +22,11 @@ int main(void) {
         Vector2 center = {xpos , ypos};
         Rectangle rec = {200 , 200  , 10, 10};
 
-        
         if(CheckCollisionCircleRec(center, 2.0f, rec))
         {
             DrawText("Hit!", 10, 10, 20, LIGHTGRAY);
         }
 
-        
         if(IsKeyDown(KEY_W))
         {
             ypos = ypos-speed;
