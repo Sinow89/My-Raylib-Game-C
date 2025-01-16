@@ -25,9 +25,18 @@ int main(void) {
         Rectangle rec = {200 , 200  , 10, 10};
 
 
-        while (ball_xpos == ball_xpos && ball_ypos < 550)
+        while (1)
         {
-            ball_ypos = ball_ypos + speed;
+            if(ball_ypos > 0 && ball_ypos < 575)
+            {
+                ball_ypos = ball_ypos + speed;
+            }
+
+            // if(ball_ypos > 0 && ball_ypos < 575)
+            // {
+            //     ball_ypos = ball_ypos - speed;
+            // }
+
             break;
         }
         
