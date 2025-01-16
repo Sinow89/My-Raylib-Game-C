@@ -7,16 +7,15 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 int main(void) {
     // Initialize the window
     InitWindow(800, 600, "Raylib - Hello World");
+    SetTargetFPS(60);
 
 
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose()) {  
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawText("Hello, Raylib!", 10, 10, 20, LIGHTGRAY);
+        DrawCircle(400, 300, 10, GREEN);
         EndDrawing();
-        GetFrameTime();
-        GetTime();
-        GetFPS();
     }
 
     // Close window and OpenGL context
