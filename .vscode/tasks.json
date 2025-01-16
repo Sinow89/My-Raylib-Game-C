@@ -20,7 +20,7 @@
                 "cwd": "C:/zig"
             },
             "problemMatcher": [
-                "$gcc"
+                "$zig"
             ],
             "group": {
                 "kind": "build",
