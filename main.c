@@ -11,24 +11,33 @@ int main(void) {
         int xpos = 400;
         int ypos = 300;
     
-
     while (!WindowShouldClose()) {  
  
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
         DrawText("Hello, Raylib!", 10, 10, 20, LIGHTGRAY);
-        DrawRectangle(xpos, ypos, 75, 25, GREEN);
+        DrawRectangle(xpos, ypos, 75, 25, WHITE);
+
+        if(IsKeyDown(KEY_W))
+        {
+            ypos = ypos-10;
+        }
+
+        if(IsKeyDown(KEY_A))
+        {  
+            xpos = xpos-10;
+        }
+
+        if(IsKeyDown(KEY_S))
+        {
+            ypos = ypos+10;        
+        }
 
         if(IsKeyDown(KEY_D))
         {
-            xpos= xpos+10;
+            xpos = xpos+10;
         }
         
-        if(IsKeyDown(KEY_W))
-        {
-            ypos= ypos+10;
-        }
-
         DrawFPS(700, 500);
         EndDrawing();
     }
