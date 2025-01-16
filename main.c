@@ -8,43 +8,53 @@ int main(void) {
     // Initialize the window
     InitWindow(800, 600, "Raylib - Hello World");
     SetTargetFPS(60);
-        float xpos = 400;
-        float ypos = 300;
+        float player_xpos = 400;
+        float player_ypos = 300;
+        float ball_xpos = 200;
+        float ball_ypos = 200;
         float speed = 5;
     
     while (!WindowShouldClose()) {  
  
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawCircle(200, 200, 10, BLUE);
-        DrawRectangle(xpos, ypos, 75, 25, WHITE);
+        DrawCircle(ball_xpos, ball_ypos, 10, BLUE);
+        DrawRectangle(player_xpos, player_ypos, 75, 25, WHITE);
 
-        Vector2 center = {xpos , ypos};
+        Vector2 center = {player_xpos , player_ypos};
         Rectangle rec = {200 , 200  , 10, 10};
+
+
+        while (ball_xpos == ball_xpos && ball_ypos < 550)
+        {
+            ball_ypos = ball_ypos + speed;
+            break;
+        }
+        
 
         if(CheckCollisionCircleRec(center, 2.0f, rec))
         {
             DrawText("Hit!", 10, 10, 20, LIGHTGRAY);
         }
 
-        if(IsKeyDown(KEY_W) && ypos > 0)
+        if(IsKeyDown(KEY_W) && player_ypos > 0)
         {
-            ypos = ypos-speed;
+            player_ypos = player_ypos-speed;
         }
 
-        if(IsKeyDown(KEY_A) && xpos > 0)
+        if(IsKeyDown(KEY_A) && player_xpos > 0)
         {  
-            xpos = xpos-speed;
+            player_xpos = player_xpos-speed;
         }
 
-        if(IsKeyDown(KEY_S) && ypos < 575)
+        if(IsKeyDown(KEY_S) && player_ypos < 575)
         {
-            ypos = ypos+speed;        
+            player_ypos = player_ypos+speed;        
         }
 
-        if(IsKeyDown(KEY_D) && xpos < 725)
+        if(IsKeyDown(KEY_D) && player_xpos < 725)
         {
-            xpos = xpos+speed;
+            player_xpos = player_xpos+speed;
         }
         
         DrawFPS(700, 500);
