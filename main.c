@@ -1,5 +1,7 @@
 #include "raylib.h"
 
+//Created 2025-01-15 by Christoffer Rozenbachs
+
 /* Use this command in powershell to make it compile. gcc cant find 
 zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -lm
 */
@@ -22,21 +24,13 @@ int main(void) {
         DrawRectangle(player_xpos, player_ypos, 75, 25, WHITE);
 
         Vector2 center = {player_xpos , player_ypos};
-        Rectangle rec = {200 , 200  , 10, 10};
+        Rectangle rec = {ball_xpos , ball_ypos  , 10, 10};
 
 
-        while (1)
+        while (!CheckCollisionCircleRec(center, 5.0f, rec))
         {
-            if(ball_ypos > 0 && ball_ypos < 575)
-            {
-                ball_ypos = ball_ypos + speed;
-            }
-
-            // if(ball_ypos > 0 && ball_ypos < 575)
-            // {
-            //     ball_ypos = ball_ypos - speed;
-            // }
-
+            ball_ypos = ball_ypos + 2;
+            ball_xpos = ball_xpos + 2;
             break;
         }
         
