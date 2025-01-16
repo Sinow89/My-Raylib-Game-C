@@ -27,22 +27,22 @@ int main(void) {
             DrawText("Hit!", 10, 10, 20, LIGHTGRAY);
         }
 
-        if(IsKeyDown(KEY_W))
+        if(IsKeyDown(KEY_W) && ypos > 0)
         {
             ypos = ypos-speed;
         }
 
-        if(IsKeyDown(KEY_A))
+        if(IsKeyDown(KEY_A) && xpos > 0)
         {  
             xpos = xpos-speed;
         }
 
-        if(IsKeyDown(KEY_S))
+        if(IsKeyDown(KEY_S) && ypos < 575)
         {
             ypos = ypos+speed;        
         }
 
-        if(IsKeyDown(KEY_D))
+        if(IsKeyDown(KEY_D) && xpos < 725)
         {
             xpos = xpos+speed;
         }
