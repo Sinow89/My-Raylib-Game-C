@@ -23,19 +23,20 @@ int main(void) {
         DrawCircle(ball_xpos, ball_ypos, 10, BLUE);
         DrawRectangle(player_xpos, player_ypos, 75, 25, WHITE);
 
-        Vector2 center = {player_xpos , player_ypos};
-        Rectangle rec = {ball_xpos , ball_ypos  , 10, 10};
+        //This Vector2 is the center of the ball.
+        //The Rectangle defines the Retangle and sets the position and size.
+        Vector2 center = {ball_xpos , ball_ypos};
+        Rectangle rec = {player_xpos , player_ypos  , 75, 25};
 
 
-        while (!CheckCollisionCircleRec(center, 5.0f, rec))
+        while (!CheckCollisionCircleRec(center, 10.0f, rec))
         {
             ball_ypos = ball_ypos + 2;
             ball_xpos = ball_xpos + 2;
             break;
         }
-        
-
-        if(CheckCollisionCircleRec(center, 2.0f, rec))
+    
+        if(CheckCollisionCircleRec(center, 10.0f, rec))
         {
             DrawText("Hit!", 10, 10, 20, LIGHTGRAY);
         }
