@@ -12,9 +12,10 @@ int main(void) {
     SetTargetFPS(60);
         float player_xpos = 400;
         float player_ypos = 300;
+        float player_speed = 5;
         float ball_xpos = 200;
         float ball_ypos = 200;
-        float speed = 5;
+        float ball_speed = 2;
     
     while (!WindowShouldClose()) {  
  
@@ -28,37 +29,42 @@ int main(void) {
         Vector2 center = {ball_xpos , ball_ypos};
         Rectangle rec = {player_xpos , player_ypos  , 75, 25};
 
-
-        while (!CheckCollisionCircleRec(center, 10.0f, rec))
+        while (1)
         {
-            ball_ypos = ball_ypos + 2;
-            ball_xpos = ball_xpos + 2;
+            ball_ypos = ball_ypos + ball_speed;
+            ball_xpos = ball_xpos + ball_speed;
+
+            if(CheckCollisionCircleRec(center, 10.0f, rec))
+            {
+            ball_ypos = ball_ypos - ball_speed;
+            ball_xpos = ball_xpos - ball_speed;
+            }
+
             break;
         }
     
-        if(CheckCollisionCircleRec(center, 10.0f, rec))
-        {
-            DrawText("Hit!", 10, 10, 20, LIGHTGRAY);
-        }
+        /*-------------------------------------------------------*/
+        /*----------------------Controls-------------------------*/
+        /*-------------------------------------------------------*/
 
         if(IsKeyDown(KEY_W) && player_ypos > 0)
         {
-            player_ypos = player_ypos-speed;
+            player_ypos = player_ypos-player_speed;
         }
 
         if(IsKeyDown(KEY_A) && player_xpos > 0)
         {  
-            player_xpos = player_xpos-speed;
+            player_xpos = player_xpos-player_speed;
         }
 
         if(IsKeyDown(KEY_S) && player_ypos < 575)
         {
-            player_ypos = player_ypos+speed;        
+            player_ypos = player_ypos+player_speed;        
         }
 
         if(IsKeyDown(KEY_D) && player_xpos < 725)
         {
-            player_xpos = player_xpos+speed;
+            player_xpos = player_xpos+player_speed;
         }
         
         DrawFPS(700, 500);
