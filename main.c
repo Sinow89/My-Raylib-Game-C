@@ -62,6 +62,12 @@ int main(void) {
         if (game_ball.ball_ypos - game_ball.ball_radius < 0 || game_ball.ball_ypos + game_ball.ball_radius > screenHeight) {
             velocity.y = -velocity.y; // Reverse y direction
         }
+        if (CheckCollisionCircleRec(center, 10.0f, rec)){
+            velocity.y = -velocity.y;
+        }
+        if (CheckCollisionCircleRec(center, 10.0f, rec)){
+            velocity.x = -velocity.x;
+        }
 
         /*-------------------------------------------------------*/
         /*----------------------Controls-------------------------*/
