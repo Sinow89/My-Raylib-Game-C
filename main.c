@@ -28,6 +28,7 @@ int main(void) {
     // Initialize the window
     const int screenWidth = 800;
     const int screenHeight = 600;
+    Vector2 velocity = {5, 3};
     SetTargetFPS(60);
     InitWindow(screenWidth, screenHeight, "Raylib - Hello World");
 
@@ -47,16 +48,16 @@ int main(void) {
 
         //This Vector2 is the center of the ball.
         Vector2 center = {game_ball.ball_xpos, game_ball.ball_ypos};
-        Vector2 velocity = {5, 3};
         Vector2 newPosition = AddVector2(center, velocity);
 
         game_ball.ball_xpos = newPosition.x;
         game_ball.ball_ypos = newPosition.y;
 
-        if (game_ball.ball_xpos - game_ball.ball_radius < 0 || game_ball.ball_xpos + game_ball.ball_radius > 300) {
+        //Making the ball "bounce" when hiting the walls.
+        if (game_ball.ball_xpos - game_ball.ball_radius < 0 || game_ball.ball_xpos + game_ball.ball_radius > screenWidth) {
             velocity.x = -velocity.x; // Reverse x direction
         }
-        if (game_ball.ball_ypos - game_ball.ball_radius < 0 || game_ball.ball_ypos + game_ball.ball_radius > 400) {
+        if (game_ball.ball_ypos - game_ball.ball_radius < 0 || game_ball.ball_ypos + game_ball.ball_radius > screenHeight) {
             velocity.y = -velocity.y; // Reverse y direction
         }
 
