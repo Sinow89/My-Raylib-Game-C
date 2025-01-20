@@ -25,16 +25,18 @@ Vector2 AddVector2(Vector2 v1, Vector2 v2) {
 }
 
 int main(void) {
-    // Initialize the window
+    // Initialize the window.
     const int screenWidth = 800;
     const int screenHeight = 600;
-    Vector2 velocity = {5, 3};
     SetTargetFPS(60);
-    InitWindow(screenWidth, screenHeight, "Raylib - Hello World");
+    InitWindow(screenWidth, screenHeight, "RaylibGame");
 
-    // Initialize the player and ball
+    // Initialize the player and ball.
     player game_player = {400, 300, 5};
     ball game_ball = {200, 200, 2, 10};
+
+    //Set the Velocity ofside the while loop.
+    Vector2 velocity = {5, 3};
 
     while (!WindowShouldClose()) {
 
@@ -93,7 +95,7 @@ int main(void) {
         EndDrawing();
     }
 
-    // Close window and OpenGL context
+    // Close window and OpenGL context.
     CloseWindow();
     return 0;
 }
