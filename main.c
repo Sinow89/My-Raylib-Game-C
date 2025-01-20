@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 
 //Created 2025-01-15 by Christoffer Rozenbachs
 
@@ -9,7 +10,7 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 typedef struct{
     float ball_xpos;
     float ball_ypos;
-    float ball_speed;
+    float ball_velocity;
     float ball_radius;
 } ball;
 
@@ -19,11 +20,18 @@ typedef struct{
     float player_speed;
 } player;
 
+Vector2 AddVector2(Vector2 v1, Vector2 v2) {
+    return (Vector2){v1.x + v2.x, v1.y + v2.y};
+}
+
 int main(void) {
     // Initialize the window
-    InitWindow(800, 600, "Raylib - Hello World");
+    const int screenWidth = 800;
+    const int screenHeight = 600;
     SetTargetFPS(60);
+    InitWindow(screenWidth, screenHeight, "Raylib - Hello World");
 
+    // Initialize the player and ball
     player game_player = {400, 300, 5};
     ball game_ball = {200, 200, 2, 10};
 
@@ -34,23 +42,22 @@ int main(void) {
         DrawCircle(game_ball.ball_xpos, game_ball.ball_ypos, game_ball.ball_radius, BLUE);
         DrawRectangle(game_player.player_xpos, game_player.player_ypos, 75, 25, WHITE);
 
-        //This Vector2 is the center of the ball.
         //The Rectangle defines the Retangle and sets the position and size.
-        Vector2 center = {game_ball.ball_xpos , game_ball.ball_ypos};
-        Rectangle rec = {game_player.player_xpos , game_player.player_ypos  , 75, 25};
+        Rectangle rec = {game_player.player_xpos, game_player.player_ypos , 75, 25};
 
-        while (1)
-        {
-            game_ball.ball_ypos = game_ball.ball_ypos + game_ball.ball_speed;
-            game_ball.ball_xpos = game_ball.ball_xpos + game_ball.ball_speed;
+        //This Vector2 is the center of the ball.
+        Vector2 center = {game_ball.ball_xpos, game_ball.ball_ypos};
+        Vector2 velocity = {5, 3};
+        Vector2 newPosition = AddVector2(center, velocity);
 
-            if(CheckCollisionCircleRec(center, 10.0f, rec))
-            {
-            game_ball.ball_ypos = game_ball.ball_ypos - game_ball.ball_speed;
-            game_ball.ball_xpos = game_ball.ball_xpos - game_ball.ball_speed;
-            }
+        game_ball.ball_xpos = newPosition.x;
+        game_ball.ball_ypos = newPosition.y;
 
-            break;
+        if (game_ball.ball_xpos - game_ball.ball_radius < 0 || game_ball.ball_xpos + game_ball.ball_radius > 300) {
+            velocity.x = -velocity.x; // Reverse x direction
+        }
+        if (game_ball.ball_ypos - game_ball.ball_radius < 0 || game_ball.ball_ypos + game_ball.ball_radius > 400) {
+            velocity.y = -velocity.y; // Reverse y direction
         }
 
         /*-------------------------------------------------------*/
@@ -76,6 +83,10 @@ int main(void) {
         {
             game_player.player_xpos = game_player.player_xpos+game_player.player_speed;
         }
+
+        /*-------------------------------------------------------*/
+        /*--------------------End-of-Controls--------------------*/
+        /*-------------------------------------------------------*/
 
         DrawFPS(700, 500);
         EndDrawing();
