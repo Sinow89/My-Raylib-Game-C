@@ -8,8 +8,10 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 */
 
 //------------------------TO-DO---------------------------------------------//
-//1. Fix ball collsion
-//
+//1. Fix ball collsion correctly
+//2. Fix player boundries connect to screen height and width.
+//3. Fix ball boundires connect to screen height and width.
+//4. Fix movement of both ball and player to normailze vector etc. 
 
 typedef struct{
     Vector2 position;
