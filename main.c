@@ -7,6 +7,12 @@
 zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -lm
 */
 
+//------------------------TO-DO---------------------------------------------//
+//1. Fix player struct player_speed is not use. Should be player_velocity.
+//2. Fix ball collsion
+//
+
+
 typedef struct{
     float ball_xpos;
     float ball_ypos;
@@ -35,8 +41,9 @@ int main(void) {
     player game_player = {400, 300, 5};
     ball game_ball = {200, 200, 2, 10};
 
-    //Set the Velocity ofside the while loop.
+    //Set the Velocity outside the while loop.
     Vector2 velocity = {5, 3};
+    Vector2 player_velocity = {30, 20};
 
     while (!WindowShouldClose()) {
 
@@ -54,6 +61,10 @@ int main(void) {
 
         game_ball.ball_xpos = newPosition.x;
         game_ball.ball_ypos = newPosition.y;
+
+        //Vector2 of the player
+        Vector2 center_player = {game_player.player_xpos, game_player.player_ypos};
+        Vector2 newPosition_player = AddVector2(center_player, player_velocity);
 
         //Making the ball "bounce" when hiting the walls.
         if (game_ball.ball_xpos - game_ball.ball_radius < 0 || game_ball.ball_xpos + game_ball.ball_radius > screenWidth) {
@@ -75,11 +86,13 @@ int main(void) {
 
         if(IsKeyDown(KEY_W) && game_player.player_ypos > 0)
         {
-            game_player.player_ypos = game_player.player_ypos-game_player.player_speed;
+            game_player.player_ypos = newPosition_player.y;
+            // game_player.player_ypos = game_player.player_ypos-game_player.player_speed;
         }
 
         if(IsKeyDown(KEY_A) && game_player.player_xpos > 0)
         {
+            game_player.pl
             game_player.player_xpos = game_player.player_xpos-game_player.player_speed;
         }
 
