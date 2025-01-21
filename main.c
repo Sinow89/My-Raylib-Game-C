@@ -41,8 +41,6 @@ int main(void) {
     ball_t ball = {200, 200, 10, 10, 10, 2};
 
     //Set the Velocity outside the while loop.
-    Vector2 velocity = {5, 3};
-    Vector2 player_velocity = {10, 6};
 
     while (!WindowShouldClose()) {
 
@@ -63,9 +61,6 @@ int main(void) {
         // ball.position.x = newPosition.x;
         // ball.position.y = newPosition.y;
 
-        //Vector2 of the player
-        Vector2 center_player = {player.position.x, player.position.y};
-        Vector2 newPosition_player = AddVector2(center_player, player_velocity);
 
         //Making the ball "bounce" when hiting the walls.
         // if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
