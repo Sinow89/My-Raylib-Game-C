@@ -8,8 +8,7 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 */
 
 //------------------------TO-DO---------------------------------------------//
-//1. Fix player struct player_speed is not use. Should be player_velocity.
-//2. Fix ball collsion
+//1. Fix ball collsion
 //
 
 typedef struct{
@@ -33,11 +32,11 @@ int main(void) {
     // Initialize the window.
     const int screen_width = 800;
     const int screen_height = 600;
-    SetTargetFPS(60);
+    // SetTargetFPS(120);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
     // Initialize the player and ball.
-    player_t player = {400, 300, 5, 5, 5};
+    player_t player = {400, 300, 5, 5, 1000};
     ball_t ball = {200, 200, 10, 10, 10, 2};
 
     //Set the Velocity outside the while loop.
@@ -90,24 +89,22 @@ int main(void) {
 
         if(IsKeyDown(KEY_W) && player.position.y > 0)
         {
-            // player.position.y = -newPosition_player.y;
-            player.position.y = player.position.y-player.speed;
+            player.position.y = player.position.y-player.speed*delta_time;
         }
 
         if(IsKeyDown(KEY_A) && player.position.x > 0)
         {
-            // game_player.pl
-            player.position.x = player.position.x - player.speed;
+            player.position.x = player.position.x - player.speed*delta_time;
         }
 
         if(IsKeyDown(KEY_S) && player.position.y < 575)
         {
-            player.position.y = player.position.y+player.speed;
+            player.position.y = player.position.y+player.speed*delta_time;
         }
 
         if(IsKeyDown(KEY_D) && player.position.x < 725)
         {
-            player.position.x = player.position.x+player.speed;
+            player.position.x = player.position.x+player.speed*delta_time;
         }
 
         /*-------------------------------------------------------*/
