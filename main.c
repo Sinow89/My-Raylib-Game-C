@@ -37,7 +37,7 @@ int main(void) {
     InitWindow(screen_width, screen_height, "RaylibGame");
 
     // Initialize the player and ball.
-    player_t player = {400, 300, 5, 5};
+    player_t player = {400, 300, 5, 5, 5};
     ball_t ball = {200, 200, 10, 10, 10, 2};
 
     //Set the Velocity outside the while loop.
