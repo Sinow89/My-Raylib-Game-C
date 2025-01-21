@@ -32,12 +32,12 @@ int main(void) {
     // Initialize the window.
     const int screen_width = 800;
     const int screen_height = 600;
-    // SetTargetFPS(120);
+    SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
     // Initialize the player and ball.
     player_t player = {400, 300, 5, 5, 1000};
-    ball_t ball = {200, 200, 10, 10, 10, 2};
+    ball_t ball = {200, 200, 10, 10, 10, 100};
 
     //Set the Velocity outside the while loop.
 
@@ -53,21 +53,16 @@ int main(void) {
         //The Rectangle defines the Retangle and sets the position and size.
         Rectangle rec = {player.position.x, player.position.y , 75, 25};
 
-        //This Vector2 is the center of the ball.
-        // Vector2 center = {ball.position.x, ball.position.y};
-        // Vector2 newPosition = AddVector2(center, velocity);
+        ball.position.x = ball.position.x+ball.speed*delta_time;
+        ball.position.y = ball.position.y+ball.speed*delta_time;
 
-        // ball.position.x = newPosition.x;
-        // ball.position.y = newPosition.y;
-
-
-        //Making the ball "bounce" when hiting the walls.
-        // if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
-        //     velocity.x = -velocity.x; // Reverse x direction
-        // }
-        // if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height) {
-        //     velocity.y = -velocity.y; // Reverse y direction
-        // }
+        // Making the ball "bounce" when hiting the walls.
+        if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
+            ball.velocity.x = -ball.velocity.x; // Reverse x direction
+        }
+        if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height) {
+            ball.velocity.y = -ball.velocity.y; // Reverse y direction
+        }
         // if (CheckCollisionCircleRec(center, 10.0f, rec)){
         //     velocity.y = -velocity.y;
         // }
