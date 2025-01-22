@@ -56,7 +56,7 @@ int main(void) {
         DrawRectangle(player.position.x, player.position.y, player.width, player.height, WHITE);
 
         //Draw the ball and set the speed of ball.
-        DrawCircle(ball.position.x, ball.position.y, ball.radius, BLUE);
+        DrawCircleV(ball.position, ball.radius, BLUE);
         // ball.position.x = ball.position.x+ball.speed*delta_time;
         // ball.position.y = ball.position.y+ball.speed*delta_time;
         // ball.velocity = Vector2Normalize(ball.velocity);
@@ -82,12 +82,12 @@ int main(void) {
         /*----------------------Controls-------------------------*/
         /*-------------------------------------------------------*/
         
-        /*
-        player.velocity = Vector2Normalize(player.velocity);                // 1. make length = 1
-        player.velocity = Vector2Scale(player.velocity, player.speed);      // 2. make length = speed
-        player.velocity = Vector2Scale(player.velocity, delta_time);        // 3. make length proportional to one frame
-        player.position = Vector2Add(player.position, player.velocity);     // 4. apply velocity vector to position vector
-        */
+        
+        // player.velocity = Vector2Normalize(player.velocity);                // 1. make length = 1
+        // player.velocity = Vector2Scale(player.velocity, player.speed);      // 2. make length = speed
+        // player.velocity = Vector2Scale(player.velocity, delta_time);        // 3. make length proportional to one frame
+        // player.position = Vector2Add(player.position, player.velocity);     // 4. apply velocity vector to position vector
+    
 
 
         if(IsKeyDown(KEY_W) && player.position.y >= 0)
