@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -58,8 +59,12 @@ int main(void) {
 
         //Draw the ball and set the speed of ball.
         DrawCircle(ball.position.x, ball.position.y, ball.radius, BLUE);
-        ball.position.x = ball.position.x+ball.speed*delta_time;
-        ball.position.y = ball.position.y+ball.speed*delta_time;
+        // ball.position.x = ball.position.x+ball.speed*delta_time;
+        // ball.position.y = ball.position.y+ball.speed*delta_time;
+        // ball.velocity = Vector2Normalize(ball.velocity);
+        // ball.velocity = Vector2Scale(ball.velocity, ball.speed);
+        // ball.velocity = Vector2Scale(ball.velocity, delta_time);
+        ball.position = Vector2Add(ball.position, ball.velocity);
 
         // Making the ball "bounce" when hiting the walls.
         if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
@@ -68,11 +73,11 @@ int main(void) {
         if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height) {
             ball.velocity.y = -ball.velocity.y; // Reverse y direction
         }
-        // if (CheckCollisionCircleRec(center, 10.0f, rec)){
-        //     velocity.y = -velocity.y;
-        // }
-        // if (CheckCollisionCircleRec(center, 10.0f, rec)){
-        //     velocity.x = -velocity.x;
+        if (CheckCollisionCircleRec(ball.position, 10.0f, rec)){
+            ball.velocity.y = -ball.velocity.y;
+        }
+        // if (CheckCollisionCircleRec(player.position, 10.0f, rec)){
+        //     ball.velocity.x = -ball.velocity.x;
         // }
 
         /*-------------------------------------------------------*/
@@ -110,6 +115,20 @@ int main(void) {
         /*-------------------------------------------------------*/
         /*--------------------End-of-Controls--------------------*/
         /*-------------------------------------------------------*/
+
+        //----------------------DEBUGING--------------------------/
+
+        char debugText[256];
+
+        // Format the debug information into a string
+        sprintf(debugText, "Velocity: (%.2f, %.2f)", ball.velocity.x, ball.velocity.y);
+        DrawText(debugText, 10, 10, 20, DARKGRAY);
+
+        sprintf(debugText, "Position: (%.2f, %.2f)", ball.position.x, ball.position.y);
+        DrawText(debugText, 10, 40, 20, DARKGRAY);
+
+        sprintf(debugText, "Speed: %.2f, Delta Time: %.5f", ball.speed, delta_time);
+        DrawText(debugText, 10, 70, 20, DARKGRAY);
 
         DrawFPS(700, 500);
         EndDrawing();
