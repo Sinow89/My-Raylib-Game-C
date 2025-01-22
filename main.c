@@ -17,6 +17,8 @@ typedef struct{
     Vector2 position;
     Vector2 velocity;
     float speed;
+    float height;
+    float width;
 } player_t;
 
 typedef struct{
@@ -38,7 +40,7 @@ int main(void) {
     InitWindow(screen_width, screen_height, "RaylibGame");
 
     // Initialize the player and ball.
-    player_t player = {400, 300, 5, 5, 1000};
+    player_t player = {400, 300, 5, 5, 1000, 75, 25};
     ball_t ball = {200, 200, 10, 10, 10, 100};
 
     //Set the Velocity outside the while loop.
@@ -49,12 +51,13 @@ int main(void) {
 
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawRectangle(player.position.x, player.position.y, 75, 25, WHITE);
-        DrawCircle(ball.position.x, ball.position.y, ball.radius, BLUE);
 
         //The Rectangle defines the Retangle and sets the position and size.
-        Rectangle rec = {player.position.x, player.position.y , 75, 25};
+        Rectangle rec = {player.position.x, player.position.y , player.height, player.width};
+        DrawRectangle(player.position.x, player.position.y, player.height, player.width, WHITE);
 
+        //Draw the ball and set the speed of ball.
+        DrawCircle(ball.position.x, ball.position.y, ball.radius, BLUE);
         ball.position.x = ball.position.x+ball.speed*delta_time;
         ball.position.y = ball.position.y+ball.speed*delta_time;
 
@@ -84,24 +87,24 @@ int main(void) {
         */
 
 
-        if(IsKeyDown(KEY_W) && player.position.y > 0)
+        if(IsKeyDown(KEY_W) && player.position.y >= 0)
         {
-            player.position.y = player.position.y-player.speed*delta_time;
+            player.position.y = player.position.y - player.speed*delta_time;
         }
 
-        if(IsKeyDown(KEY_A) && player.position.x > 0)
+        if(IsKeyDown(KEY_A) && player.position.x >= 0)
         {
             player.position.x = player.position.x - player.speed*delta_time;
         }
 
-        if(IsKeyDown(KEY_S) && player.position.y < 575)
+        if(IsKeyDown(KEY_S) && player.position.y < (screen_height-32))
         {
-            player.position.y = player.position.y+player.speed*delta_time;
+            player.position.y = player.position.y + player.speed*delta_time;
         }
 
-        if(IsKeyDown(KEY_D) && player.position.x < 725)
+        if(IsKeyDown(KEY_D) && player.position.x < (screen_width-80))
         {
-            player.position.x = player.position.x+player.speed*delta_time;
+            player.position.x = player.position.x + player.speed*delta_time;
         }
 
         /*-------------------------------------------------------*/
