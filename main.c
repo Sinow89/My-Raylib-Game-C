@@ -9,17 +9,15 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 */
 
 //------------------------TO-DO---------------------------------------------//
-//1. Fix ball collsion correctly
-//2. Fix player boundries connect to screen height and width.
-//3. Fix ball boundires connect to screen height and width.
-//4. Fix movement of both ball and player to normailze vector etc. 
+//1. Fix player boundries connect to screen height and width.
+//2. Fix collision on rec.
 
 typedef struct{
     Vector2 position;
     Vector2 velocity;
     float speed;
-    float height;
     float width;
+    float height;
 } player_t;
 
 typedef struct{
@@ -42,7 +40,7 @@ int main(void) {
 
     // Initialize the player and ball.
     player_t player = {400, 300, 5, 5, 1000, 75, 25};
-    ball_t ball = {200, 200, 10, 10, 10, 100};
+    ball_t ball = {200, 200, 5, 5, 10, 100};
 
     //Set the Velocity outside the while loop.
 
@@ -54,8 +52,8 @@ int main(void) {
         ClearBackground(BLACK);
 
         //The Rectangle defines the Retangle and sets the position and size.
-        Rectangle rec = {player.position.x, player.position.y , player.height, player.width};
-        DrawRectangle(player.position.x, player.position.y, player.height, player.width, WHITE);
+        Rectangle rec = {player.position.x, player.position.y , player.width, player.height};
+        DrawRectangle(player.position.x, player.position.y, player.width, player.height, WHITE);
 
         //Draw the ball and set the speed of ball.
         DrawCircle(ball.position.x, ball.position.y, ball.radius, BLUE);
@@ -76,7 +74,7 @@ int main(void) {
         if (CheckCollisionCircleRec(ball.position, 10.0f, rec)){
             ball.velocity.y = -ball.velocity.y;
         }
-        // if (CheckCollisionCircleRec(player.position, 10.0f, rec)){
+        // if (CheckCollisionCircleRec(ball.position, 10.0f, rec)){
         //     ball.velocity.x = -ball.velocity.x;
         // }
 
