@@ -38,10 +38,9 @@ int main(void) {
     InitWindow(screen_width, screen_height, "RaylibGame");
 
     // Initialize the player and ball.
-    player_t player = {400, 300, 5, 5, 1000, 75, 25};
-    ball_t ball = {200, 200, 0, -5, 10, 10};
+    player_t player = {350, 500, 5, 5, 1000, 75, 25};
+    ball_t ball = {200, 200, -5, -5, 10, 10};
     
-
     while (!WindowShouldClose()) {
 
         float delta_time = GetFrameTime();
@@ -51,17 +50,17 @@ int main(void) {
         /*----------------------Game-logic-----------------------*/
         /*-------------------------------------------------------*/
 
-        ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
-        ball.position = Vector2Add(ball.position, Vector2Scale(ball.velocity, delta_time));
+        // ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
+        // ball.position = Vector2Add(ball.position, Vector2Scale(ball.velocity, delta_time));
 
         ball.position.x += ball.velocity.x;
         ball.position.y += ball.velocity.y;
 
         //Making the ball "bounce" when hiting the walls.
-        if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width+1) {
+        if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
             ball.velocity.x = -ball.velocity.x; // Reverse x direction
         }
-        if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height+1) {
+        if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height) {
             ball.velocity.y = -ball.velocity.y; // Reverse y direction
         }
 
@@ -70,7 +69,7 @@ int main(void) {
         {
             if (ball.velocity.y > 0)
             {
-                ball.velocity.y *= -1;
+                ball.velocity.y = -ball.velocity.y;
                 ball.velocity.x = (ball.position.x - player.position.x)/(player.size.x/2)*5;
             }
         }
@@ -80,22 +79,22 @@ int main(void) {
         /*-------------------------------------------------------*/
         
 
-        if(IsKeyDown(KEY_W) && player.position.y >= 0)
-        {
-            player.position.y = player.position.y - player.speed*delta_time;
-        }
+        // if(IsKeyDown(KEY_W) && player.position.y >= 0)
+        // {
+        //     player.position.y = player.position.y - player.speed*delta_time;
+        // }
 
-        if(IsKeyDown(KEY_A) && player.position.x >= 0)
+        if(IsKeyDown(KEY_A) && player.position.x > 46)
         {
             player.position.x = player.position.x - player.speed*delta_time;
         }
 
-        if(IsKeyDown(KEY_S) && player.position.y < (screen_height-32))
-        {
-            player.position.y = player.position.y + player.speed*delta_time;
-        }
+        // if(IsKeyDown(KEY_S) && player.position.y < (screen_height-32))
+        // {
+        //     player.position.y = player.position.y + player.speed*delta_time;
+        // }
 
-        if(IsKeyDown(KEY_D) && player.position.x < screen_width)
+        if(IsKeyDown(KEY_D) && player.position.x < screen_width-45)
         {
             player.position.x = player.position.x + player.speed*delta_time;
         }
