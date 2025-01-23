@@ -16,8 +16,7 @@ typedef struct{
     Vector2 position;
     Vector2 velocity;
     float speed;
-    float width;
-    float height;
+    Vector2 size;
 } player_t;
 
 typedef struct{
@@ -27,9 +26,9 @@ typedef struct{
     float speed;
 } ball_t;
 
-Vector2 AddVector2(Vector2 v1, Vector2 v2) {
-    return (Vector2){v1.x + v2.x, v1.y + v2.y};
-}
+// Vector2 AddVector2(Vector2 v1, Vector2 v2) {
+//     return (Vector2){v1.x + v2.x, v1.y + v2.y};
+// }
 
 int main(void) {
     // Initialize the window.
@@ -40,14 +39,13 @@ int main(void) {
 
     // Initialize the player and ball.
     player_t player = {400, 300, 5, 5, 1000, 75, 25};
-    ball_t ball = {(Vector2){200, 200}, (Vector2){5, 5}, 10, 100};
-
-    //Set the Velocity outside the while loop.
+    ball_t ball = {200, 200, 0, -5, 10, 10};
+    
 
     while (!WindowShouldClose()) {
 
         float delta_time = GetFrameTime();
-        Rectangle rec = {player.position.x, player.position.y , player.width, player.height};
+        Rectangle rec = { player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y};
 
         /*-------------------------------------------------------*/
         /*----------------------Game-logic-----------------------*/
@@ -55,22 +53,27 @@ int main(void) {
 
         ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
         ball.position = Vector2Add(ball.position, Vector2Scale(ball.velocity, delta_time));
-        // Vector2 future_position = Vector2Add(ball.position, ball.velocity);
+
+        ball.position.x += ball.velocity.x;
+        ball.position.y += ball.velocity.y;
 
         //Making the ball "bounce" when hiting the walls.
-        if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
+        if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width+1) {
             ball.velocity.x = -ball.velocity.x; // Reverse x direction
         }
-        if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height) {
+        if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height+1) {
             ball.velocity.y = -ball.velocity.y; // Reverse y direction
         }
 
-        if (CheckCollisionCircleRec(ball.position, 10.0f, rec)){
-            ball.velocity.y = -ball.velocity.y;
+        //Collision logic ball
+        if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
+        {
+            if (ball.velocity.y > 0)
+            {
+                ball.velocity.y *= -1;
+                ball.velocity.x = (ball.position.x - player.position.x)/(player.size.x/2)*5;
+            }
         }
-        // if (CheckCollisionCircleRec(ball.position, 10.0f, rec)){
-        //     ball.velocity.x = -ball.velocity.x;
-        // }
 
         /*-------------------------------------------------------*/
         /*----------------------Controls-------------------------*/
@@ -92,7 +95,7 @@ int main(void) {
             player.position.y = player.position.y + player.speed*delta_time;
         }
 
-        if(IsKeyDown(KEY_D) && player.position.x < (screen_width-80))
+        if(IsKeyDown(KEY_D) && player.position.x < screen_width)
         {
             player.position.x = player.position.x + player.speed*delta_time;
         }
@@ -121,7 +124,8 @@ int main(void) {
         ClearBackground(BLACK);
 
         //The Rectangle defines the Retangle and sets the position and size.
-        DrawRectangle(player.position.x, player.position.y, player.width, player.height, WHITE);
+         DrawRectangle(player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y, WHITE);
+        // DrawRectangle(player.position.x, player.position.y, player.width, player.height, WHITE);
 
         //Draw the ball and set the speed of ball.
         DrawCircleV(ball.position, ball.radius, BLUE);
