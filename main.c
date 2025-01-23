@@ -14,6 +14,12 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 
 typedef struct{
     Vector2 position;
+    Vector2 size;
+    int lives;
+} block_t;
+
+typedef struct{
+    Vector2 position;
     Vector2 velocity;
     float speed;
     Vector2 size;
@@ -40,11 +46,13 @@ int main(void) {
     // Initialize the player and ball.
     player_t player = {350, 500, 5, 5, 1000, 75, 25};
     ball_t ball = {200, 200, -5, -5, 10, 10};
+    block_t block = {100, 100, 75,25, 3};
     
     while (!WindowShouldClose()) {
 
         float delta_time = GetFrameTime();
         Rectangle rec = { player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y};
+        Rectangle rec_block = {block.position.x, block.position.y, block.size.x, block.size.y};
 
         /*-------------------------------------------------------*/
         /*----------------------Game-logic-----------------------*/
@@ -121,6 +129,8 @@ int main(void) {
 
         BeginDrawing();
         ClearBackground(BLACK);
+
+        DrawRectangle(block.position.x, block.position.y, block.size.x, block.size.y, WHITE);
 
         //The Rectangle defines the Retangle and sets the position and size.
          DrawRectangle(player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y, WHITE);
