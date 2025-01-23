@@ -47,32 +47,26 @@ int main(void) {
     while (!WindowShouldClose()) {
 
         float delta_time = GetFrameTime();
-
-        BeginDrawing();
-        ClearBackground(BLACK);
-
-        //The Rectangle defines the Retangle and sets the position and size.
         Rectangle rec = {player.position.x, player.position.y , player.width, player.height};
-        DrawRectangle(player.position.x, player.position.y, player.width, player.height, WHITE);
 
-        //Draw the ball and set the speed of ball.
-        DrawCircleV(ball.position, ball.radius, BLUE);
-        // ball.position.x = ball.position.x+ball.speed*delta_time;
-        // ball.position.y = ball.position.y+ball.speed*delta_time;
-        ball.velocity = Vector2Normalize(ball.velocity);
-        ball.velocity = Vector2Scale(ball.velocity, ball.speed * delta_time);
-        Vector2 future_position = Vector2Add(ball.position, ball.velocity);
+        /*-------------------------------------------------------*/
+        /*----------------------Game-logic-----------------------*/
+        /*-------------------------------------------------------*/
 
-        // Making the ball "bounce" when hiting the walls.
-        // if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
-        //     ball.velocity.x = -ball.velocity.x; // Reverse x direction
-        // }
-        // if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height) {
-        //     ball.velocity.y = -ball.velocity.y; // Reverse y direction
-        // }
+        ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
+        ball.position = Vector2Add(ball.position, Vector2Scale(ball.velocity, delta_time));
+        // Vector2 future_position = Vector2Add(ball.position, ball.velocity);
 
-        if (!CheckCollisionCircleRec(future_position, 10.0f, rec)){
-            ball.position = future_position;
+        //Making the ball "bounce" when hiting the walls.
+        if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
+            ball.velocity.x = -ball.velocity.x; // Reverse x direction
+        }
+        if (ball.position.y - ball.radius < 0 || ball.position.y + ball.radius > screen_height) {
+            ball.velocity.y = -ball.velocity.y; // Reverse y direction
+        }
+
+        if (CheckCollisionCircleRec(ball.position, 10.0f, rec)){
+            ball.velocity.y = -ball.velocity.y;
         }
         // if (CheckCollisionCircleRec(ball.position, 10.0f, rec)){
         //     ball.velocity.x = -ball.velocity.x;
@@ -82,13 +76,6 @@ int main(void) {
         /*----------------------Controls-------------------------*/
         /*-------------------------------------------------------*/
         
-        
-        // player.velocity = Vector2Normalize(player.velocity);                // 1. make length = 1
-        // player.velocity = Vector2Scale(player.velocity, player.speed);      // 2. make length = speed
-        // player.velocity = Vector2Scale(player.velocity, delta_time);        // 3. make length proportional to one frame
-        // player.position = Vector2Add(player.position, player.velocity);     // 4. apply velocity vector to position vector
-    
-
 
         if(IsKeyDown(KEY_W) && player.position.y >= 0)
         {
@@ -111,10 +98,8 @@ int main(void) {
         }
 
         /*-------------------------------------------------------*/
-        /*--------------------End-of-Controls--------------------*/
+        /*--------------------Debugging--------------------------*/
         /*-------------------------------------------------------*/
-
-        //----------------------DEBUGING--------------------------/
 
         char debugText[256];
 
@@ -127,6 +112,19 @@ int main(void) {
 
         sprintf(debugText, "Speed: %.2f, Delta Time: %.5f", ball.speed, delta_time);
         DrawText(debugText, 10, 70, 20, DARKGRAY);
+
+        /*-------------------------------------------------------*/
+        /*----------------------Drawing--------------------------*/
+        /*-------------------------------------------------------*/
+
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        //The Rectangle defines the Retangle and sets the position and size.
+        DrawRectangle(player.position.x, player.position.y, player.width, player.height, WHITE);
+
+        //Draw the ball and set the speed of ball.
+        DrawCircleV(ball.position, ball.radius, BLUE);
 
         DrawFPS(700, 500);
         EndDrawing();
