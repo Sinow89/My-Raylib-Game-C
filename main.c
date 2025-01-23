@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -9,14 +10,19 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 */
 
 //------------------------TO-DO---------------------------------------------//
-//1. Fix player boundries connect to screen height and width.
-//2. Fix collision on rec.
+//1. Fix collision on blocks.
+
+#define ROWS 5 // Number of lines
+#define COLS 11 // Number of columns
 
 typedef struct{
     Vector2 position;
     Vector2 size;
     int lives;
+    bool active;
 } block_t;
+
+block_t blocks[ROWS][COLS];
 
 typedef struct{
     Vector2 position;
@@ -46,14 +52,23 @@ int main(void) {
     // Initialize the player and ball.
     player_t player = {350, 500, 5, 5, 1000, 75, 25};
     ball_t ball = {200, 200, -5, -5, 10, 10};
-    block_t block = {100, 100, 75,25, 3};
+    block_t block = {100, 100, 75,25, 1, true};
+    // Rectangle rec_block = {block.position.x, block.position.y, block.size.x, block.size.y};
     
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            blocks[i][j].position.x = j * block.size.x; // Set x position
+            blocks[i][j].position.y = i * block.size.y; // Set y position
+            blocks[i][j].active = true; // Set block as active
+            blocks[i][j].lives = 1; // Set initial lives
+        }
+    }
+
     while (!WindowShouldClose()) {
 
         float delta_time = GetFrameTime();
         Rectangle rec = { player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y};
-        Rectangle rec_block = {block.position.x, block.position.y, block.size.x, block.size.y};
-
+        
         /*-------------------------------------------------------*/
         /*----------------------Game-logic-----------------------*/
         /*-------------------------------------------------------*/
@@ -72,7 +87,7 @@ int main(void) {
             ball.velocity.y = -ball.velocity.y; // Reverse y direction
         }
 
-        //Collision logic ball
+        //Collision logic ball with player
         if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
         {
             if (ball.velocity.y > 0)
@@ -81,6 +96,16 @@ int main(void) {
                 ball.velocity.x = (ball.position.x - player.position.x)/(player.size.x/2)*5;
             }
         }
+
+        //Collision logic ball with blocks
+        // if (CheckCollisionCircleRec(ball.position, ball.radius, rec_block))
+        // {
+        //     ball.velocity.y = -ball.velocity.y;
+        //     block.lives--;
+        //         if(block.lives == 0){
+        //             block.active = false;
+        //         }
+        // }
 
         /*-------------------------------------------------------*/
         /*----------------------Controls-------------------------*/
@@ -111,17 +136,17 @@ int main(void) {
         /*--------------------Debugging--------------------------*/
         /*-------------------------------------------------------*/
 
-        char debugText[256];
+        // char debugText[256];
 
-        // Format the debug information into a string
-        sprintf(debugText, "Velocity: (%.2f, %.2f)", ball.velocity.x, ball.velocity.y);
-        DrawText(debugText, 10, 10, 20, DARKGRAY);
+        // // Format the debug information into a string
+        // sprintf(debugText, "Velocity: (%.2f, %.2f)", ball.velocity.x, ball.velocity.y);
+        // DrawText(debugText, 10, 10, 20, DARKGRAY);
 
-        sprintf(debugText, "Position: (%.2f, %.2f)", ball.position.x, ball.position.y);
-        DrawText(debugText, 10, 40, 20, DARKGRAY);
+        // sprintf(debugText, "Position: (%.2f, %.2f)", ball.position.x, ball.position.y);
+        // DrawText(debugText, 10, 40, 20, DARKGRAY);
 
-        sprintf(debugText, "Speed: %.2f, Delta Time: %.5f", ball.speed, delta_time);
-        DrawText(debugText, 10, 70, 20, DARKGRAY);
+        // sprintf(debugText, "Speed: %.2f, Delta Time: %.5f", ball.speed, delta_time);
+        // DrawText(debugText, 10, 70, 20, DARKGRAY);
 
         /*-------------------------------------------------------*/
         /*----------------------Drawing--------------------------*/
@@ -130,7 +155,24 @@ int main(void) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        DrawRectangle(block.position.x, block.position.y, block.size.x, block.size.y, WHITE);
+
+        for (int i = 0; i < ROWS; i++)
+        {
+            for (int j = 0; j < COLS; j++)
+            {
+                if (blocks[i][j].active)
+                {
+                    if ((i + j) % 2 == 0) DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 40, 20, GRAY);
+                    else DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 40, 20, DARKGRAY);
+                }
+            }
+        }
+
+
+        // if (block.active == true)
+        // {
+        //     DrawRectangle(block.position.x, block.position.y, block.size.x, block.size.y, GRAY);
+        // } 
 
         //The Rectangle defines the Retangle and sets the position and size.
          DrawRectangle(player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y, WHITE);
