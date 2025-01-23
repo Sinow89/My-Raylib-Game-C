@@ -13,7 +13,7 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 //1. Fix collision on blocks.
 
 #define ROWS 5 // Number of lines
-#define COLS 11 // Number of columns
+#define COLS 10 // Number of columns
 
 typedef struct{
     Vector2 position;
@@ -157,7 +157,7 @@ int main(void) {
 
         for (int i = 0; i < ROWS; i++){
             for (int j = 0; j < COLS; j++){
-                DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 70, 20, GRAY);
+                DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
             }
         }
 
