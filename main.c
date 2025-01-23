@@ -155,19 +155,11 @@ int main(void) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-
-        for (int i = 0; i < ROWS; i++)
-        {
-            for (int j = 0; j < COLS; j++)
-            {
-                if (blocks[i][j].active)
-                {
-                    if ((i + j) % 2 == 0) DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 70, 20, GRAY);
-                    else DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 70, 20, DARKGRAY);
-                }
+        for (int i = 0; i < ROWS; i++){
+            for (int j = 0; j < COLS; j++){
+                DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 70, 20, GRAY);
             }
         }
-
 
         // if (block.active == true)
         // {
