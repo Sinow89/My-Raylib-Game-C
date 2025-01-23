@@ -162,8 +162,8 @@ int main(void) {
             {
                 if (blocks[i][j].active)
                 {
-                    if ((i + j) % 2 == 0) DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 40, 20, GRAY);
-                    else DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 40, 20, DARKGRAY);
+                    if ((i + j) % 2 == 0) DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 70, 20, GRAY);
+                    else DrawRectangle(blocks[i][j].position.x, blocks[i][j].position.y, 70, 20, DARKGRAY);
                 }
             }
         }
