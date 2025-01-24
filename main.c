@@ -53,7 +53,7 @@ int main(void) {
     player_t player = {350, 500, 5, 5, 1000, 75, 25};
     ball_t ball = {200, 200, -5, -5, 10, 10};
     block_t block = {100, 100, 75,25, 1, true};
-    // Rectangle rec_block = {block.position.x, block.position.y, block.size.x, block.size.y};
+    
     
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -90,22 +90,30 @@ int main(void) {
         //Collision logic ball with player
         if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
         {
-            if (ball.velocity.y > 0)
-            {
+            if (ball.velocity.y > 0){
                 ball.velocity.y = -ball.velocity.y;
                 ball.velocity.x = (ball.position.x - player.position.x)/(player.size.x/2)*5;
             }
         }
 
         //Collision logic ball with blocks
-        // if (CheckCollisionCircleRec(ball.position, ball.radius, rec_block))
-        // {
-        //     ball.velocity.y = -ball.velocity.y;
-        //     block.lives--;
-        //         if(block.lives == 0){
-        //             block.active = false;
-        //         }
-        // }
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                // Only check collision for active blocks
+                if (blocks[i][j].active) {
+                    Rectangle rec_block = {blocks[i][j].position.x, blocks[i][j].position.y, block.size.x, block.size.y};
+                    
+                    if (CheckCollisionCircleRec(ball.position, ball.radius, rec_block)) {
+                        ball.velocity.y = -ball.velocity.y;
+                        blocks[i][j].lives--;
+                        
+                        if (blocks[i][j].lives == 0) {
+                            blocks[i][j].active = false;
+                        }
+                    }
+                }
+            }
+        }
 
         /*-------------------------------------------------------*/
         /*----------------------Controls-------------------------*/
@@ -136,17 +144,21 @@ int main(void) {
         /*--------------------Debugging--------------------------*/
         /*-------------------------------------------------------*/
 
-        // char debugText[256];
+        char debugText[256];
 
-        // // Format the debug information into a string
-        // sprintf(debugText, "Velocity: (%.2f, %.2f)", ball.velocity.x, ball.velocity.y);
-        // DrawText(debugText, 10, 10, 20, DARKGRAY);
+        // Format the debug information into a string
+        sprintf(debugText, "Velocity: (%.2f, %.2f)", ball.velocity.x, ball.velocity.y);
+        DrawText(debugText, 10, 10, 20, DARKGRAY);
 
-        // sprintf(debugText, "Position: (%.2f, %.2f)", ball.position.x, ball.position.y);
-        // DrawText(debugText, 10, 40, 20, DARKGRAY);
+        sprintf(debugText, "Position: (%.2f, %.2f)", ball.position.x, ball.position.y);
+        DrawText(debugText, 10, 40, 20, DARKGRAY);
 
-        // sprintf(debugText, "Speed: %.2f, Delta Time: %.5f", ball.speed, delta_time);
-        // DrawText(debugText, 10, 70, 20, DARKGRAY);
+        sprintf(debugText, "Speed: %.2f, Delta Time: %.5f", ball.speed, delta_time);
+        DrawText(debugText, 10, 70, 20, DARKGRAY);
+
+        // Add block lives to debug output
+        sprintf(debugText, "Block Lives: %d", blocks[4][5].lives);
+        DrawText(debugText, 10, 400, 20, DARKGRAY);
 
         /*-------------------------------------------------------*/
         /*----------------------Drawing--------------------------*/
@@ -157,7 +169,9 @@ int main(void) {
 
         for (int i = 0; i < ROWS; i++){
             for (int j = 0; j < COLS; j++){
+                if (blocks[i][j].active){
                 DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
+                }
             }
         }
 
