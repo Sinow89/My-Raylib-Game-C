@@ -46,6 +46,7 @@ int main(void) {
     // Initialize the window.
     const int screen_width = 800;
     const int screen_height = 600;
+    bool debug_menu = false; 
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
@@ -68,7 +69,7 @@ int main(void) {
 
         float delta_time = GetFrameTime();
         Rectangle rec = { player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y};
-        
+
         /*-------------------------------------------------------*/
         /*----------------------Game-logic-----------------------*/
         /*-------------------------------------------------------*/
@@ -144,7 +145,12 @@ int main(void) {
         /*--------------------Debugging--------------------------*/
         /*-------------------------------------------------------*/
 
-        char debugText[256];
+        if (IsKeyPressed(KEY_U)) {
+            debug_menu = !debug_menu;  // Toggle the menu visibility
+        }
+
+        if (debug_menu) {
+                    char debugText[256];
 
         // Format the debug information into a string
         sprintf(debugText, "Velocity: (%.2f, %.2f)", ball.velocity.x, ball.velocity.y);
@@ -159,6 +165,7 @@ int main(void) {
         // Add block lives to debug output
         sprintf(debugText, "Block Lives: %d", blocks[4][5].lives);
         DrawText(debugText, 10, 400, 20, DARKGRAY);
+        } 
 
         /*-------------------------------------------------------*/
         /*----------------------Drawing--------------------------*/
