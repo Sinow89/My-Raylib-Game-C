@@ -178,7 +178,7 @@ int main(void) {
         ClearBackground(BLACK);
 
         //Score points
-        char score_point[2];
+        char score_point[9];
         sprintf(score_point, "Score: %d",score);
         DrawText(score_point, 10, 400, 20, DARKGRAY);
 
