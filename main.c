@@ -266,7 +266,7 @@ int main(void) {
         //Lives points
         char lives_point[9];
         sprintf(lives_point, "Lives: %d",player.lives);
-        DrawText(lives_point, 10, 500, 20, DARKGRAY);
+        DrawText(lives_point, 10, 55 0, 20, DARKGRAY);
 
         //Drawing of active Rectangles
         for (int i = 0; i < ROWS; i++){
