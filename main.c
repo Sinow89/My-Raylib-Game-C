@@ -48,6 +48,7 @@ int main(void) {
     const int screen_width = 800;
     const int screen_height = 600;
     bool debug_menu = false; 
+    bool pause = true;
     int score = 0;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
@@ -79,8 +80,12 @@ int main(void) {
         // ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
         // ball.position = Vector2Add(ball.position, Vector2Scale(ball.velocity, delta_time));
 
-        ball.position.x += ball.velocity.x;
-        ball.position.y += ball.velocity.y;
+        if (pause == false)
+        {
+            ball.position.x += ball.velocity.x;
+            ball.position.y += ball.velocity.y;
+        }
+        
 
         //Making the ball "bounce" when hiting the walls.
         if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
@@ -123,13 +128,17 @@ int main(void) {
         /*----------------------Controls-------------------------*/
         /*-------------------------------------------------------*/
         
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            pause = !pause;
+        }        
 
         // if(IsKeyDown(KEY_W) && player.position.y >= 0)
         // {
         //     player.position.y = player.position.y - player.speed*delta_time;
         // }
 
-        if(IsKeyDown(KEY_A) && player.position.x > 46)
+        if(IsKeyDown(KEY_A) && player.position.x > 46 && pause == false)
         {
             player.position.x = player.position.x - player.speed*delta_time;
         }
@@ -139,7 +148,7 @@ int main(void) {
         //     player.position.y = player.position.y + player.speed*delta_time;
         // }
 
-        if(IsKeyDown(KEY_D) && player.position.x < screen_width-45)
+        if(IsKeyDown(KEY_D) && player.position.x < screen_width-45 && pause == false)
         {
             player.position.x = player.position.x + player.speed*delta_time;
         }
@@ -176,6 +185,13 @@ int main(void) {
 
         BeginDrawing();
         ClearBackground(BLACK);
+
+        //Start/Pause text
+        if(pause == true){
+            char pause[50];
+            sprintf(pause, "Press Space to begin and pause the game");
+            DrawText(pause, 200, 300, 20, WHITE);
+        }
 
         //Score points
         char score_point[9];
