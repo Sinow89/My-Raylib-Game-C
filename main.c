@@ -11,6 +11,7 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 
 //------------------------TO-DO---------------------------------------------//
 //1. Fix collision on blocks.
+//2. Game over screen
 
 #define ROWS 5 // Number of lines
 #define COLS 10 // Number of columns
@@ -47,6 +48,7 @@ int main(void) {
     const int screen_width = 800;
     const int screen_height = 600;
     bool debug_menu = false; 
+    int score = 0;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
@@ -110,6 +112,7 @@ int main(void) {
                         
                         if (blocks[i][j].lives == 0) {
                             blocks[i][j].active = false;
+                            score = score+100;
                         }
                     }
                 }
@@ -174,6 +177,12 @@ int main(void) {
         BeginDrawing();
         ClearBackground(BLACK);
 
+        //Score points
+        char score_point[2];
+        sprintf(score_point, "Score: %d",score);
+        DrawText(score_point, 10, 400, 20, DARKGRAY);
+
+        //Drawing of active Rectangles
         for (int i = 0; i < ROWS; i++){
             for (int j = 0; j < COLS; j++){
                 if (blocks[i][j].active){
@@ -181,11 +190,6 @@ int main(void) {
                 }
             }
         }
-
-        // if (block.active == true)
-        // {
-        //     DrawRectangle(block.position.x, block.position.y, block.size.x, block.size.y, GRAY);
-        // } 
 
         //The Rectangle defines the Retangle and sets the position and size.
          DrawRectangle(player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y, WHITE);
