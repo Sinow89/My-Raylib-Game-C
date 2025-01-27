@@ -30,6 +30,7 @@ typedef struct{
     Vector2 velocity;
     float speed;
     Vector2 size;
+    int lives;
 } player_t;
 
 typedef struct{
@@ -49,15 +50,15 @@ int main(void) {
     const int screen_height = 600;
     bool debug_menu = false; 
     bool pause = true;
+    bool lost_life = false;
     int score = 0;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
     // Initialize the player and ball.
-    player_t player = {350, 500, 5, 5, 1000, 75, 25};
+    player_t player = {350, 500, 5, 5, 1000, 75, 25, 3};
     ball_t ball = {200, 200, -5, -5, 10, 10};
     block_t block = {100, 100, 75,25, 1, true};
-    
     
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -85,8 +86,19 @@ int main(void) {
             ball.position.x += ball.velocity.x;
             ball.position.y += ball.velocity.y;
         }
-        
 
+        //Lose a life mechanics
+        if (ball.position.x > 800 || ball.position.y > 575)
+        {
+            --player.lives;
+            ball.position.x = 200;
+            ball.position.y = 200;
+            player.position.x = 350;
+            player.position.y = 500;
+            lost_life= true;
+        }
+
+        
         //Making the ball "bounce" when hiting the walls.
         if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
             ball.velocity.x = -ball.velocity.x; // Reverse x direction
@@ -131,7 +143,7 @@ int main(void) {
         if (IsKeyPressed(KEY_SPACE))
         {
             pause = !pause;
-        }        
+        }    
 
         // if(IsKeyDown(KEY_W) && player.position.y >= 0)
         // {
@@ -193,10 +205,59 @@ int main(void) {
             DrawText(pause, 200, 300, 20, WHITE);
         }
 
+
+        if (player.lives == 0)
+        {
+            while (true) // Game over loop
+            {
+                BeginDrawing();
+                ClearBackground(BLACK); // Optional: Clear the screen for better visibility
+
+                DrawText("Game Over!", 200, 300, 20, WHITE);
+                DrawText("Press SPACE to Restart", 200, 350, 20, WHITE);
+
+                if (IsKeyPressed(KEY_SPACE)) {
+                    // Reset the game or exit the game over state
+                    player.lives = 3; // Example: Reset lives
+                    score = 0;
+                    ball.position.x = 200;
+                    ball.position.y = 200;
+                    player.position.x = 350;
+                    player.position.y = 500;
+                    break; // Exit the loop
+                    
+                }
+                EndDrawing();
+            }
+        }
+
+        while (lost_life == true){
+                BeginDrawing();
+                ClearBackground(BLACK); // Optional: Clear the screen for better visibility
+
+                DrawText("You lost a life", 200, 300, 20, WHITE);
+                DrawText("Press SPACE to continue", 200, 350, 20, WHITE);
+
+                if (IsKeyPressed(KEY_SPACE)) {
+                    ball.position.x = 200;
+                    ball.position.y = 200;
+                    player.position.x = 350;
+                    player.position.y = 500;
+                    lost_life = false;
+                    break;
+                }
+                EndDrawing();
+        }
+
         //Score points
         char score_point[9];
         sprintf(score_point, "Score: %d",score);
-        DrawText(score_point, 10, 400, 20, DARKGRAY);
+        DrawText(score_point, 10, 450, 20, DARKGRAY);
+
+        //Lives points
+        char lives_point[9];
+        sprintf(lives_point, "Lives: %d",player.lives);
+        DrawText(lives_point, 10, 500, 20, DARKGRAY);
 
         //Drawing of active Rectangles
         for (int i = 0; i < ROWS; i++){
