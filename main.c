@@ -12,6 +12,8 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 //------------------------TO-DO---------------------------------------------//
 //1. Fix collision on blocks.
 //2. Create win game screen. When all blocks are inactive.
+//3. Refactor and create methods for the game states instead.
+//4. Add a isRunnig bool and restructe the main while loop.
 
 #define ROWS 5 // Number of lines
 #define COLS 10 // Number of columns
