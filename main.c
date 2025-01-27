@@ -227,6 +227,15 @@ int main(void) {
                     break; // Exit the loop
                     
                 }
+                for (int i = 0; i < ROWS; i++) {
+                    for (int j = 0; j < COLS; j++) {
+                        blocks[i][j].position.x = j * block.size.x; // Set x position
+                        blocks[i][j].position.y = i * block.size.y; // Set y position
+                        blocks[i][j].active = true; // Set block as active
+                        blocks[i][j].lives = 1; // Set initial lives
+                    }
+                }
+
                 EndDrawing();
             }
         }
