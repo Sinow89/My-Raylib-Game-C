@@ -11,9 +11,12 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 
 //------------------------TO-DO---------------------------------------------//
 //1. Fix collision on blocks.
+//2. Refactor and create methods for the game states instead.
 
 #define ROWS 5 // Number of lines
 #define COLS 10 // Number of columns
+#define RED_ROWS 2 // Number of lines
+#define RED_COLS 5 // Number of columns
 
 typedef struct{
     Vector2 position;
@@ -29,6 +32,7 @@ typedef struct{
     Vector2 velocity;
     float speed;
     Vector2 size;
+    int lives;
 } player_t;
 
 typedef struct{
@@ -47,14 +51,17 @@ int main(void) {
     const int screen_width = 800;
     const int screen_height = 600;
     bool debug_menu = false; 
+    bool pause = true;
+    bool lost_life = false;
+    int active_blocks = 50;
+    int score = 0;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
     // Initialize the player and ball.
-    player_t player = {350, 500, 5, 5, 1000, 75, 25};
+    player_t player = {350, 500, 5, 5, 1000, 75, 25, 3};
     ball_t ball = {200, 200, -5, -5, 10, 10};
     block_t block = {100, 100, 75,25, 1, true};
-    
     
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -77,8 +84,22 @@ int main(void) {
         // ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
         // ball.position = Vector2Add(ball.position, Vector2Scale(ball.velocity, delta_time));
 
-        ball.position.x += ball.velocity.x;
-        ball.position.y += ball.velocity.y;
+        if (pause == false)
+        {
+            ball.position.x += ball.velocity.x;
+            ball.position.y += ball.velocity.y;
+        }
+
+        //Lose a life mechanics
+        if (ball.position.x > 800 || ball.position.y > 575)
+        {
+            --player.lives;
+            ball.position.x = 200;
+            ball.position.y = 200;
+            player.position.x = 350;
+            player.position.y = 500;
+            lost_life= true;
+        }
 
         //Making the ball "bounce" when hiting the walls.
         if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
@@ -110,8 +131,28 @@ int main(void) {
                         
                         if (blocks[i][j].lives == 0) {
                             blocks[i][j].active = false;
+                            score = score+100;
+                            --active_blocks;
                         }
                     }
+                }
+            }
+        }
+
+        //Collison ball with red block
+        if (blocks[RED_ROWS][RED_COLS].active) {
+            Rectangle red_block = {blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, block.size.x, block.size.y};
+        
+            if (CheckCollisionCircleRec(ball.position, ball.radius, red_block)) {
+                ball.velocity.y = -ball.velocity.y;
+                blocks[RED_ROWS][RED_COLS].lives--;
+                
+
+                if (blocks[RED_ROWS][RED_COLS].lives == 0) {
+                    blocks[RED_ROWS][RED_COLS].active = false;
+                    score = score + 100;
+                    --active_blocks;
+                    ++player.lives;
                 }
             }
         }
@@ -120,13 +161,17 @@ int main(void) {
         /*----------------------Controls-------------------------*/
         /*-------------------------------------------------------*/
         
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            pause = !pause;
+        }    
 
         // if(IsKeyDown(KEY_W) && player.position.y >= 0)
         // {
         //     player.position.y = player.position.y - player.speed*delta_time;
         // }
 
-        if(IsKeyDown(KEY_A) && player.position.x > 46)
+        if(IsKeyDown(KEY_A) && player.position.x > 46 && pause == false)
         {
             player.position.x = player.position.x - player.speed*delta_time;
         }
@@ -136,7 +181,7 @@ int main(void) {
         //     player.position.y = player.position.y + player.speed*delta_time;
         // }
 
-        if(IsKeyDown(KEY_D) && player.position.x < screen_width-45)
+        if(IsKeyDown(KEY_D) && player.position.x < screen_width-45 && pause == false)
         {
             player.position.x = player.position.x + player.speed*delta_time;
         }
@@ -165,6 +210,8 @@ int main(void) {
         // Add block lives to debug output
         sprintf(debugText, "Block Lives: %d", blocks[4][5].lives);
         DrawText(debugText, 10, 400, 20, DARKGRAY);
+
+        DrawFPS(700, 500);
         } 
 
         /*-------------------------------------------------------*/
@@ -174,18 +221,122 @@ int main(void) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        for (int i = 0; i < ROWS; i++){
-            for (int j = 0; j < COLS; j++){
-                if (blocks[i][j].active){
-                DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
+        //Start/Pause text
+        if(pause == true){
+            char pause[50];
+            sprintf(pause, "Press Space to begin and pause the game");
+            DrawText(pause, 200, 300, 20, WHITE);
+        }
+
+
+        if (player.lives == 0)
+        {
+            while (true){ 
+                BeginDrawing();
+                ClearBackground(BLACK); // Optional: Clear the screen for better visibility
+
+                DrawText("Game Over!", 200, 300, 20, WHITE);
+                DrawText("Press SPACE to Restart", 200, 350, 20, WHITE);
+
+                if (IsKeyPressed(KEY_SPACE)) {
+                    // Reset the game or exit the game over state
+                    player.lives = 3; // Example: Reset lives
+                    score = 0;
+                    ball.position.x = 200;
+                    ball.position.y = 200;
+                    player.position.x = 350;
+                    player.position.y = 500;
+                    break; // Exit the loop
+                    
                 }
+                for (int i = 0; i < ROWS; i++) {
+                    for (int j = 0; j < COLS; j++) {
+                        blocks[i][j].position.x = j * block.size.x; // Set x position
+                        blocks[i][j].position.y = i * block.size.y; // Set y position
+                        blocks[i][j].active = true; // Set block as active
+                        blocks[i][j].lives = 1; // Set initial lives
+                    }
+                }
+
+                EndDrawing();
             }
         }
 
-        // if (block.active == true)
-        // {
-        //     DrawRectangle(block.position.x, block.position.y, block.size.x, block.size.y, GRAY);
-        // } 
+        if (active_blocks == 0)
+        {
+            while (true){ 
+                BeginDrawing();
+                ClearBackground(BLACK); // Optional: Clear the screen for better visibility
+
+                DrawText("You Won! Congratulations!", 200, 300, 20, WHITE);
+                DrawText("Press SPACE to Restart", 200, 350, 20, WHITE);
+
+                if (IsKeyPressed(KEY_SPACE)) {
+                    // Reset the game or exit the game over state
+                    player.lives = 3; // Example: Reset lives
+                    score = 0;
+                    ball.position.x = 200;
+                    ball.position.y = 200;
+                    player.position.x = 350;
+                    player.position.y = 500;
+                    active_blocks = 50;
+                    break; // Exit the loop
+                    
+                }
+                for (int i = 0; i < ROWS; i++) {
+                    for (int j = 0; j < COLS; j++) {
+                        blocks[i][j].position.x = j * block.size.x; // Set x position
+                        blocks[i][j].position.y = i * block.size.y; // Set y position
+                        blocks[i][j].active = true; // Set block as active
+                        blocks[i][j].lives = 1; // Set initial lives
+                    }
+                }
+
+                EndDrawing();
+            }
+        }
+
+        while (lost_life == true){
+                BeginDrawing();
+                ClearBackground(BLACK); // Optional: Clear the screen for better visibility
+
+                DrawText("You lost a life", 200, 300, 20, WHITE);
+                DrawText("Press SPACE to continue", 200, 350, 20, WHITE);
+
+                if (IsKeyPressed(KEY_SPACE)) {
+                    ball.position.x = 200;
+                    ball.position.y = 200;
+                    player.position.x = 350;
+                    player.position.y = 500;
+                    lost_life = false;
+                    break;
+                }
+                EndDrawing();
+        }
+
+        //Score points
+        char score_point[9];
+        sprintf(score_point, "Score: %d",score);
+        DrawText(score_point, 10, 450, 20, DARKGRAY);
+
+        //Lives points
+        char lives_point[9];
+        sprintf(lives_point, "Lives: %d",player.lives);
+        DrawText(lives_point, 10, 550, 20, DARKGRAY);
+
+        //Drawing of active Rectangles
+        for (int i = 0; i < ROWS; i++){
+            for (int j = 0; j < COLS; j++){
+                if (blocks[i][j].active){
+                    if (i == RED_ROWS && j == RED_COLS)
+                    {
+                        DrawRectangle(blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, 70, 20, RED);
+                    }
+                    else
+                    DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
+                }
+            }
+        }
 
         //The Rectangle defines the Retangle and sets the position and size.
          DrawRectangle(player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y, WHITE);
@@ -194,7 +345,6 @@ int main(void) {
         //Draw the ball and set the speed of ball.
         DrawCircleV(ball.position, ball.radius, BLUE);
 
-        DrawFPS(700, 500);
         EndDrawing();
     }
 
