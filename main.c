@@ -15,8 +15,8 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 
 #define ROWS 5 // Number of lines
 #define COLS 10 // Number of columns
-#define RED_ROWS 4 // Number of lines
-#define RED_COLS 1 // Number of columns
+#define RED_ROWS 2 // Number of lines
+#define RED_COLS 5 // Number of columns
 
 typedef struct{
     Vector2 position;
@@ -156,8 +156,6 @@ int main(void) {
                 }
             }
         }
-
-        
 
         /*-------------------------------------------------------*/
         /*----------------------Controls-------------------------*/
