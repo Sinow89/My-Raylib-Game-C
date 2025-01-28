@@ -53,6 +53,7 @@ int main(void) {
     bool debug_menu = false; 
     bool pause = true;
     bool lost_life = false;
+    int active_blocks = 50;
     int score = 0;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
@@ -100,7 +101,6 @@ int main(void) {
             lost_life= true;
         }
 
-        
         //Making the ball "bounce" when hiting the walls.
         if (ball.position.x - ball.radius < 0 || ball.position.x + ball.radius > screen_width) {
             ball.velocity.x = -ball.velocity.x; // Reverse x direction
@@ -132,6 +132,7 @@ int main(void) {
                         if (blocks[i][j].lives == 0) {
                             blocks[i][j].active = false;
                             score = score+100;
+                            --active_blocks;
                         }
                     }
                 }
@@ -191,6 +192,8 @@ int main(void) {
         // Add block lives to debug output
         sprintf(debugText, "Block Lives: %d", blocks[4][5].lives);
         DrawText(debugText, 10, 400, 20, DARKGRAY);
+
+        DrawFPS(700, 500);
         } 
 
         /*-------------------------------------------------------*/
@@ -210,8 +213,7 @@ int main(void) {
 
         if (player.lives == 0)
         {
-            while (true) // Game over loop
-            {
+            while (true){ 
                 BeginDrawing();
                 ClearBackground(BLACK); // Optional: Clear the screen for better visibility
 
@@ -226,6 +228,40 @@ int main(void) {
                     ball.position.y = 200;
                     player.position.x = 350;
                     player.position.y = 500;
+                    break; // Exit the loop
+                    
+                }
+                for (int i = 0; i < ROWS; i++) {
+                    for (int j = 0; j < COLS; j++) {
+                        blocks[i][j].position.x = j * block.size.x; // Set x position
+                        blocks[i][j].position.y = i * block.size.y; // Set y position
+                        blocks[i][j].active = true; // Set block as active
+                        blocks[i][j].lives = 1; // Set initial lives
+                    }
+                }
+
+                EndDrawing();
+            }
+        }
+
+        if (active_blocks == 0)
+        {
+            while (true){ 
+                BeginDrawing();
+                ClearBackground(BLACK); // Optional: Clear the screen for better visibility
+
+                DrawText("You Won! Congratulations!", 200, 300, 20, WHITE);
+                DrawText("Press SPACE to Restart", 200, 350, 20, WHITE);
+
+                if (IsKeyPressed(KEY_SPACE)) {
+                    // Reset the game or exit the game over state
+                    player.lives = 3; // Example: Reset lives
+                    score = 0;
+                    ball.position.x = 200;
+                    ball.position.y = 200;
+                    player.position.x = 350;
+                    player.position.y = 500;
+                    active_blocks = 50;
                     break; // Exit the loop
                     
                 }
@@ -286,7 +322,6 @@ int main(void) {
         //Draw the ball and set the speed of ball.
         DrawCircleV(ball.position, ball.radius, BLUE);
 
-        DrawFPS(700, 500);
         EndDrawing();
     }
 
