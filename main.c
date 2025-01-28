@@ -15,6 +15,8 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 
 #define ROWS 5 // Number of lines
 #define COLS 10 // Number of columns
+#define RED_ROWS 4 // Number of lines
+#define RED_COLS 1 // Number of columns
 
 typedef struct{
     Vector2 position;
@@ -136,6 +138,26 @@ int main(void) {
                 }
             }
         }
+
+        //Collison ball with red block
+        if (blocks[RED_ROWS][RED_COLS].active) {
+            Rectangle red_block = {blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, block.size.x, block.size.y};
+        
+            if (CheckCollisionCircleRec(ball.position, ball.radius, red_block)) {
+                ball.velocity.y = -ball.velocity.y;
+                blocks[RED_ROWS][RED_COLS].lives--;
+                
+
+                if (blocks[RED_ROWS][RED_COLS].lives == 0) {
+                    blocks[RED_ROWS][RED_COLS].active = false;
+                    score = score + 100;
+                    --active_blocks;
+                    ++player.lives;
+                }
+            }
+        }
+
+        
 
         /*-------------------------------------------------------*/
         /*----------------------Controls-------------------------*/
@@ -308,9 +330,9 @@ int main(void) {
         for (int i = 0; i < ROWS; i++){
             for (int j = 0; j < COLS; j++){
                 if (blocks[i][j].active){
-                    if (i == 2 && j == 5)
+                    if (i == RED_ROWS && j == RED_COLS)
                     {
-                        DrawRectangle(blocks[2][5].position.x+30, blocks[2][5].position.y+30, 70, 20, RED);
+                        DrawRectangle(blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, 70, 20, RED);
                     }
                     else
                     DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
