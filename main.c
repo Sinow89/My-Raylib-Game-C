@@ -308,7 +308,12 @@ int main(void) {
         for (int i = 0; i < ROWS; i++){
             for (int j = 0; j < COLS; j++){
                 if (blocks[i][j].active){
-                DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
+                    if (i == 2 && j == 5)
+                    {
+                        DrawRectangle(blocks[2][5].position.x+30, blocks[2][5].position.y+30, 70, 20, RED);
+                    }
+                    else
+                    DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
                 }
             }
         }
