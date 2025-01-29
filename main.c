@@ -42,9 +42,9 @@ typedef struct{
     float speed;
 } ball_t;
 
-// Vector2 AddVector2(Vector2 v1, Vector2 v2) {
-//     return (Vector2){v1.x + v2.x, v1.y + v2.y};
-// }
+Vector2 AddVector2(Vector2 v1, Vector2 v2) {
+    return (Vector2){v1.x + v2.x, v1.y + v2.y};
+}
 
 int main(void) {
     // Initialize the window.
@@ -60,7 +60,7 @@ int main(void) {
 
     // Initialize the player and ball.
     player_t player = {350, 500, 5, 5, 1000, 75, 25, 3};
-    ball_t ball = {200, 200, -5, -5, 10, 10};
+    ball_t ball = {200, 200, -5, -5, 10, 8};
     block_t block = {100, 100, 75,25, 1, true};
     
     for (int i = 0; i < ROWS; i++) {
@@ -81,8 +81,8 @@ int main(void) {
         /*----------------------Game-logic-----------------------*/
         /*-------------------------------------------------------*/
 
-        // ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
-        // ball.position = Vector2Add(ball.position, Vector2Scale(ball.velocity, delta_time));
+        ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
+        ball.position = AddVector2(ball.position, Vector2Scale(ball.velocity, delta_time));
 
         if (pause == false)
         {
@@ -223,9 +223,7 @@ int main(void) {
 
         //Start/Pause text
         if(pause == true){
-            char pause[50];
-            sprintf(pause, "Press Space to begin and pause the game");
-            DrawText(pause, 200, 300, 20, WHITE);
+            DrawText("Press Space to begin and pause the game", 200, 300, 20, WHITE);
         }
 
 
