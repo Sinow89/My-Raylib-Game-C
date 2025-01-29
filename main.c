@@ -118,12 +118,12 @@ int main(void) {
             }
         }
 
-        //Collision logic ball with blocks
+        //Collision logic ball with blocks with offset
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
                 // Only check collision for active blocks
                 if (blocks[i][j].active) {
-                    Rectangle rec_block = {blocks[i][j].position.x, blocks[i][j].position.y, block.size.x, block.size.y};
+                    Rectangle rec_block = {blocks[i][j].position.x+30, blocks[i][j].position.y+30, block.size.x, block.size.y};
                     
                     if (CheckCollisionCircleRec(ball.position, ball.radius, rec_block)) {
                         ball.velocity.y = -ball.velocity.y;
