@@ -47,15 +47,22 @@ Vector2 add_vector2(Vector2 v1, Vector2 v2) {
     return (Vector2){v1.x + v2.x, v1.y + v2.y};
 }
 
-int read_file(){
-
+int read_high_score_file(){
     FILE* file;
     int highscore;
     file = fopen("./highscore.txt", "r");
     fscanf(file, "%d", &highscore);
     fclose(file);
     return highscore;
+}
 
+void write_new_high_score(int score){
+    int current_high_score = read_high_score_file();
+        if (score > current_high_score){
+            FILE* file = fopen("./highscore.txt", "w");
+            fprintf(file, "%d", score);
+            fclose(file);
+        }
 }
 
 int main(void) {
@@ -221,12 +228,6 @@ int main(void) {
         sprintf(debugText, "Block Lives: %d", blocks[4][5].lives);
         DrawText(debugText, 10, 400, 20, DARKGRAY);
 
-        int high_score = read_file();
-
-        sprintf(debugText, "High Score: %d", high_score);
-        DrawText(debugText, 10, 500, 20, DARKGRAY);
-
-
         DrawFPS(700, 500);
         } 
 
@@ -331,12 +332,21 @@ int main(void) {
         //Score points
         char score_point[9];
         sprintf(score_point, "Score: %d",score);
-        DrawText(score_point, 10, 450, 20, DARKGRAY);
+        DrawText(score_point, 10, 550, 20, DARKGRAY);
 
         //Lives points
         char lives_point[9];
         sprintf(lives_point, "Lives: %d",player.lives);
-        DrawText(lives_point, 10, 550, 20, DARKGRAY);
+        DrawText(lives_point, 350, 550, 20, DARKGRAY);
+
+        int high_score = read_high_score_file();
+        write_new_high_score(score);
+
+        //High Score
+        char high_point[25];
+        sprintf(high_point, "High Score: %d", high_score);
+        DrawText(high_point, 625, 550, 20, DARKGRAY);
+
 
         //Drawing of active Rectangles
         for (int i = 0; i < ROWS; i++){
