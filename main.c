@@ -14,9 +14,9 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 //1. Fix collision on blocks.
 //2. Refactor and create methods for the game states instead.
 
-#define ROWS 5 // Number of lines
-#define COLS 10 // Number of columns
-#define RED_ROWS 4 // Number of lines
+#define ROWS 2 // Number of lines
+#define COLS 5 // Number of columns
+#define RED_ROWS 1 // Number of lines
 #define RED_COLS 1 // Number of columns
 
 typedef struct{
@@ -26,7 +26,7 @@ typedef struct{
     bool active;
 } block_t;
 
-block_t blocks[ROWS][COLS];
+// block_t blocks[ROWS][COLS];
 
 typedef struct{
     Vector2 position;
@@ -72,8 +72,10 @@ int main(void) {
     bool debug_menu = false; 
     bool pause = true;
     bool lost_life = false;
-    int active_blocks = 50;
     int score = 0;
+    int rows = 3; 
+    int cols = 3;
+    int active_blocks = rows * cols;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
@@ -81,9 +83,11 @@ int main(void) {
     player_t player = {350, 500, 5, 5, 1000, 75, 25, 3};
     ball_t ball = {200, 200, -5, -5, 10, 8};
     block_t block = {100, 100, 75,25, 1, true};
+
+    block_t blocks[rows][cols];
     
-    for (int i = 0; i < ROWS; i++) {
-        for (int j = 0; j < COLS; j++) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
             blocks[i][j].position.x = j * block.size.x; // Set x position
             blocks[i][j].position.y = i * block.size.y; // Set y position
             blocks[i][j].active = true; // Set block as active
@@ -140,8 +144,8 @@ int main(void) {
         }
 
         //Ball collision logic with blocks and red powerup block
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 if (blocks[i][j].active) {
                     if (i == RED_ROWS && j == RED_COLS){
                     
@@ -228,7 +232,7 @@ int main(void) {
         DrawText(debugText, 10, 70, 20, DARKGRAY);
 
         // Add block lives to debug output
-        sprintf(debugText, "Block Lives: %d", blocks[4][5].lives);
+        sprintf(debugText, "Block Lives: %d", blocks[0][0].lives);
         DrawText(debugText, 10, 400, 20, DARKGRAY);
 
         DrawFPS(700, 500);
@@ -245,7 +249,6 @@ int main(void) {
         if(pause == true){
             DrawText("Press Space to begin and pause the game", 200, 300, 20, WHITE);
         }
-
 
         if (player.lives == 0)
         {
@@ -264,18 +267,19 @@ int main(void) {
                     ball.position.y = 200;
                     player.position.x = 350;
                     player.position.y = 500;
+                    rows = 3;
+                    cols = 3;
                     break; // Exit the loop
                     
                 }
-                for (int i = 0; i < ROWS; i++) {
-                    for (int j = 0; j < COLS; j++) {
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
                         blocks[i][j].position.x = j * block.size.x; // Set x position
                         blocks[i][j].position.y = i * block.size.y; // Set y position
                         blocks[i][j].active = true; // Set block as active
                         blocks[i][j].lives = 1; // Set initial lives
                     }
                 }
-
                 EndDrawing();
             }
         }
@@ -292,25 +296,28 @@ int main(void) {
 
                 if (IsKeyPressed(KEY_SPACE)) {
                     // Reset the game or exit the game over state
-                    player.lives = 3; // Example: Reset lives
-                    score = 0;
                     ball.position.x = 200;
                     ball.position.y = 200;
                     player.position.x = 350;
                     player.position.y = 500;
-                    active_blocks = 50;
+                    --rows;
+                    active_blocks = rows * cols;
+                    if(rows == 0){
+                        rows = 3;
+                        cols = 3;
+                        active_blocks = rows * cols;
+                    }
                     break; // Exit the loop
                     
                 }
-                for (int i = 0; i < ROWS; i++) {
-                    for (int j = 0; j < COLS; j++) {
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
                         blocks[i][j].position.x = j * block.size.x; // Set x position
                         blocks[i][j].position.y = i * block.size.y; // Set y position
                         blocks[i][j].active = true; // Set block as active
                         blocks[i][j].lives = 1; // Set initial lives
                     }
                 }
-
                 EndDrawing();
             }
         }
@@ -350,8 +357,8 @@ int main(void) {
 
 
         //Drawing of active Rectangles
-        for (int i = 0; i < ROWS; i++){
-            for (int j = 0; j < COLS; j++){
+        for (int i = 0; i < rows; i++){
+            for (int j = 0; j < cols; j++){
                 if (blocks[i][j].active){
                     if (i == RED_ROWS && j == RED_COLS){
                         DrawRectangle(blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, 70, 20, RED);
