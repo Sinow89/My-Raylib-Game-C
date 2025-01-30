@@ -43,8 +43,19 @@ typedef struct{
     float speed;
 } ball_t;
 
-Vector2 AddVector2(Vector2 v1, Vector2 v2) {
+Vector2 add_vector2(Vector2 v1, Vector2 v2) {
     return (Vector2){v1.x + v2.x, v1.y + v2.y};
+}
+
+int read_file(){
+
+    FILE* file;
+    int highscore;
+    file = fopen("./highscore.txt", "r");
+    fscanf(file, "%d", &highscore);
+    fclose(file);
+    return highscore;
+
 }
 
 int main(void) {
@@ -87,7 +98,7 @@ int main(void) {
             ball.position.x += ball.velocity.x;
             ball.position.y += ball.velocity.y; 
             ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
-            ball.position = AddVector2(ball.position, Vector2Scale(ball.velocity, delta_time));
+            ball.position = add_vector2(ball.position, Vector2Scale(ball.velocity, delta_time));
         }
 
         //Lose a life mechanics
@@ -118,41 +129,40 @@ int main(void) {
             }
         }
 
-        //Collision logic ball with blocks with offset
+        //Ball collision logic with blocks and red powerup block
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
-                // Only check collision for active blocks
                 if (blocks[i][j].active) {
+                    if (i == RED_ROWS && j == RED_COLS){
+                    
+                    Rectangle red_block = {blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, block.size.x, block.size.y};
+                            if (CheckCollisionCircleRec(ball.position, ball.radius, red_block)) {
+                                ball.velocity.y = -ball.velocity.y;
+                                blocks[RED_ROWS][RED_COLS].lives--;
+                            
+                            if (blocks[RED_ROWS][RED_COLS].lives == 0) {
+                                blocks[RED_ROWS][RED_COLS].active = false;
+                                score = score + 100;
+                                --active_blocks;
+                                ++player.lives;
+                            }
+                         }
+                    }
+
+                    else{
                     Rectangle rec_block = {blocks[i][j].position.x+30, blocks[i][j].position.y+30, block.size.x, block.size.y};
                     
-                    if (CheckCollisionCircleRec(ball.position, ball.radius, rec_block)) {
-                        ball.velocity.y = -ball.velocity.y;
-                        blocks[i][j].lives--;
-                        
-                        if (blocks[i][j].lives == 0) {
-                            blocks[i][j].active = false;
-                            score = score+100;
-                            --active_blocks;
+                        if (CheckCollisionCircleRec(ball.position, ball.radius, rec_block)) {
+                            ball.velocity.y = -ball.velocity.y;
+                            blocks[i][j].lives--;
+                            
+                            if (blocks[i][j].lives == 0) {
+                                blocks[i][j].active = false;
+                                score = score+100;
+                                --active_blocks;
+                            }
                         }
                     }
-                }
-            }
-        }
-
-        //Collison ball with red block
-        if (blocks[RED_ROWS][RED_COLS].active) {
-            Rectangle red_block = {blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, block.size.x, block.size.y};
-        
-            if (CheckCollisionCircleRec(ball.position, ball.radius, red_block)) {
-                ball.velocity.y = -ball.velocity.y;
-                blocks[RED_ROWS][RED_COLS].lives--;
-                
-
-                if (blocks[RED_ROWS][RED_COLS].lives == 0) {
-                    blocks[RED_ROWS][RED_COLS].active = false;
-                    score = score + 100;
-                    --active_blocks;
-                    ++player.lives;
                 }
             }
         }
@@ -326,8 +336,7 @@ int main(void) {
         for (int i = 0; i < ROWS; i++){
             for (int j = 0; j < COLS; j++){
                 if (blocks[i][j].active){
-                    if (i == RED_ROWS && j == RED_COLS)
-                    {
+                    if (i == RED_ROWS && j == RED_COLS){
                         DrawRectangle(blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, 70, 20, RED);
                     }
                     else
