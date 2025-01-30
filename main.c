@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include "raylib.h"
 #include "raymath.h"
@@ -81,13 +82,12 @@ int main(void) {
         /*----------------------Game-logic-----------------------*/
         /*-------------------------------------------------------*/
 
-        ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
-        ball.position = AddVector2(ball.position, Vector2Scale(ball.velocity, delta_time));
-
         if (pause == false)
         {
             ball.position.x += ball.velocity.x;
-            ball.position.y += ball.velocity.y;
+            ball.position.y += ball.velocity.y; 
+            ball.velocity = Vector2Scale(Vector2Normalize(ball.velocity), ball.speed);
+            ball.position = AddVector2(ball.position, Vector2Scale(ball.velocity, delta_time));
         }
 
         //Lose a life mechanics
