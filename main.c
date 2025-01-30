@@ -221,6 +221,12 @@ int main(void) {
         sprintf(debugText, "Block Lives: %d", blocks[4][5].lives);
         DrawText(debugText, 10, 400, 20, DARKGRAY);
 
+        int high_score = read_file();
+
+        sprintf(debugText, "High Score: %d", high_score);
+        DrawText(debugText, 10, 500, 20, DARKGRAY);
+
+
         DrawFPS(700, 500);
         } 
 
