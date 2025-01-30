@@ -16,8 +16,8 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 
 #define ROWS 5 // Number of lines
 #define COLS 10 // Number of columns
-#define RED_ROWS 2 // Number of lines
-#define RED_COLS 5 // Number of columns
+#define RED_ROWS 4 // Number of lines
+#define RED_COLS 1 // Number of columns
 
 typedef struct{
     Vector2 position;
@@ -95,6 +95,9 @@ int main(void) {
 
         float delta_time = GetFrameTime();
         Rectangle rec = { player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y};
+
+        int high_score = read_high_score_file();
+        write_new_high_score(score);
 
         /*-------------------------------------------------------*/
         /*----------------------Game-logic-----------------------*/
@@ -278,7 +281,8 @@ int main(void) {
         }
 
         if (active_blocks == 0)
-        {
+        {   
+            write_new_high_score(score);
             while (true){ 
                 BeginDrawing();
                 ClearBackground(BLACK); // Optional: Clear the screen for better visibility
@@ -338,9 +342,6 @@ int main(void) {
         char lives_point[9];
         sprintf(lives_point, "Lives: %d",player.lives);
         DrawText(lives_point, 350, 550, 20, DARKGRAY);
-
-        int high_score = read_high_score_file();
-        write_new_high_score(score);
 
         //High Score
         char high_point[25];
