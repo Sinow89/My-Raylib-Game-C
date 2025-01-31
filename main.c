@@ -14,6 +14,7 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 //------------------------TO-DO---------------------------------------------//
 //1. Fix collision on blocks.
 //2. Refactor and create methods for the game states instead.
+//3. Fix so when rows decrement also the randomize powerups blocks also decrements.
 
 // #define RED_ROWS 1 // Number of lines
 // #define RED_COLS 1 // Number of columns
@@ -65,14 +66,15 @@ void write_new_high_score(int score){
 }
 
 
-void randomize_powerup_blocks(int RED_ROWS, int RED_COLS, int BLUE_ROWS, int BLUE_COLS){
-        for (int i = 0; i < 5; i++) {  // Loop 10 times as an example
-        RED_ROWS = (rand() % 5) + 1;  // Generate numbers between 1 and 50
-        BLUE_ROWS = (rand() % 5) + 1;
+
+void randomize_powerup_blocks(int *RED_ROWS, int *RED_COLS, int *BLUE_ROWS, int *BLUE_COLS){
+        for (int i = 0; i < 4; i++) { 
+        *RED_ROWS = (rand() % 4) + 1; 
+        *BLUE_ROWS = (rand() % 4) + 1;
     }
-        for (int i = 0; i < 10; i++) {  // Loop 10 times as an example
-        RED_COLS = (rand() % 9) + 1;
-        BLUE_COLS = (rand() % 9) + 1;
+        for (int i = 0; i < 9; i++) {
+        *RED_COLS = (rand() % 9) + 1;
+        *BLUE_COLS = (rand() % 9) + 1;
     }
 
 }
@@ -80,6 +82,7 @@ void randomize_powerup_blocks(int RED_ROWS, int RED_COLS, int BLUE_ROWS, int BLU
 
 int main(void) {
     // Initialize start up variabels.
+    srand(time(NULL));
     const int screen_width = 800;
     const int screen_height = 600;
     bool start_menu = true;
@@ -102,14 +105,16 @@ int main(void) {
 
     int RED_ROWS, RED_COLS, BLUE_ROWS, BLUE_COLS;
 
-    for (int i = 0; i < 4; i++) {  // Loop 10 times as an example
-        RED_ROWS = (rand() % 4) + 1;  // Generate numbers between 1 and 50
-        BLUE_ROWS = (rand() % 4) + 1;
-    }
-        for (int i = 0; i < 10; i++) {  // Loop 10 times as an example
-        RED_COLS = (rand() % 9) + 1;
-        BLUE_COLS = (rand() % 9) + 1;
-    }
+    randomize_powerup_blocks(&RED_ROWS, &RED_COLS, &BLUE_ROWS, &BLUE_COLS);
+
+    // for (int i = 0; i < 4; i++) {  // Loop 10 times as an example
+    //     RED_ROWS = (rand() % 4) + 1;  // Generate numbers between 1 and 50
+    //     BLUE_ROWS = (rand() % 4) + 1;
+    // }
+    //     for (int i = 0; i < 10; i++) {  // Loop 10 times as an example
+    //     RED_COLS = (rand() % 9) + 1;
+    //     BLUE_COLS = (rand() % 9) + 1;
+    // }
 
 
 
@@ -344,6 +349,7 @@ int main(void) {
                     cols = start_cols;
                     ball.speed = 8;
                     active_blocks = rows * cols;
+                    randomize_powerup_blocks(&RED_ROWS, &RED_COLS, &BLUE_ROWS, &BLUE_COLS);
                     break; // Exit the loop
                     
                 }
@@ -375,6 +381,7 @@ int main(void) {
                     ball.position.y = 200;
                     player.position.x = 350;
                     player.position.y = 500;
+                    randomize_powerup_blocks(&RED_ROWS, &RED_COLS, &BLUE_ROWS, &BLUE_COLS);
                     --rows;
                     active_blocks = rows * cols;
                     ball.speed++;
