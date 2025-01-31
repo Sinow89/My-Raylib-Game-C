@@ -67,6 +67,7 @@ int main(void) {
     // Initialize start up variabels.
     const int screen_width = 800;
     const int screen_height = 600;
+    bool start_menu = true;
     bool debug_menu = false; 
     bool pause = true;
     bool lost_life = false;
@@ -99,6 +100,21 @@ int main(void) {
 
     while (!WindowShouldClose()) {
 
+        if(start_menu){
+            while (true){ 
+                BeginDrawing();
+                ClearBackground(BLACK);
+
+                DrawText("Welcome to my game!", 300, 350, 30, WHITE);
+                DrawText("Press SPACE to start", 300, 400, 20, WHITE);
+
+                if (IsKeyPressed(KEY_SPACE)){
+                    start_menu = false;
+                    break;
+                }
+                EndDrawing();
+            }
+        }
         float delta_time = GetFrameTime();
         Rectangle rec = { player.position.x - player.size.x/2, player.position.y - player.size.y/2, player.size.x, player.size.y};
 
