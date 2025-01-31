@@ -12,10 +12,11 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 */
 
 //------------------------TO-DO---------------------------------------------//
-//1. Fix collision on blocks.
+//1. Creat AABB collision on blocks.
 //2. Refactor and create methods for reset states for cleared level and game over instead.
 //3. Fix so when rows decrement also the randomize powerups blocks also decrements.
 //4. Make header files of the game logic instead.
+//5. Create a "real" game menu.
 
 typedef struct{
     Vector2 position;
@@ -70,7 +71,6 @@ void randomize_powerup_blocks(int *RED_ROWS, int *RED_COLS, int *BLUE_ROWS, int 
         *RED_COLS = (rand() % 9) + 1;
         *BLUE_COLS = (rand() % 9) + 1;
     }
-
 }
 
 int main(void) {
@@ -94,7 +94,6 @@ int main(void) {
     float debuff_time = 0.0f;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
-
 
     int RED_ROWS, RED_COLS, BLUE_ROWS, BLUE_COLS;
 
