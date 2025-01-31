@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -14,10 +15,10 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 //1. Fix collision on blocks.
 //2. Refactor and create methods for the game states instead.
 
-#define RED_ROWS 1 // Number of lines
-#define RED_COLS 1 // Number of columns
-#define BLUE_ROWS 2 // Number of lines
-#define BLUE_COLS 2 // Number of columns
+// #define RED_ROWS 1 // Number of lines
+// #define RED_COLS 1 // Number of columns
+// #define BLUE_ROWS 2 // Number of lines
+// #define BLUE_COLS 2 // Number of columns
 
 typedef struct{
     Vector2 position;
@@ -63,6 +64,20 @@ void write_new_high_score(int score){
         }
 }
 
+
+void randomize_powerup_blocks(int RED_ROWS, int RED_COLS, int BLUE_ROWS, int BLUE_COLS){
+        for (int i = 0; i < 5; i++) {  // Loop 10 times as an example
+        RED_ROWS = (rand() % 5) + 1;  // Generate numbers between 1 and 50
+        BLUE_ROWS = (rand() % 5) + 1;
+    }
+        for (int i = 0; i < 10; i++) {  // Loop 10 times as an example
+        RED_COLS = (rand() % 9) + 1;
+        BLUE_COLS = (rand() % 9) + 1;
+    }
+
+}
+
+
 int main(void) {
     // Initialize start up variabels.
     const int screen_width = 800;
@@ -73,14 +88,30 @@ int main(void) {
     bool lost_life = false;
     bool debuff_active = false;
     int score = 0;
-    int rows = 3; 
-    int cols = 3;
+    int start_rows = 5;
+    int start_cols = 10;
+    int rows = 5; 
+    int cols = 10;
     int active_blocks = rows * cols;
     float duration = 3.0f;
     float elapsed_time = 0.0f;
     float debuff_time = 0.0f;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
+
+
+    int RED_ROWS, RED_COLS, BLUE_ROWS, BLUE_COLS;
+
+    for (int i = 0; i < 4; i++) {  // Loop 10 times as an example
+        RED_ROWS = (rand() % 4) + 1;  // Generate numbers between 1 and 50
+        BLUE_ROWS = (rand() % 4) + 1;
+    }
+        for (int i = 0; i < 10; i++) {  // Loop 10 times as an example
+        RED_COLS = (rand() % 9) + 1;
+        BLUE_COLS = (rand() % 9) + 1;
+    }
+
+
 
     // Initialize the player and ball.
     player_t player = {350, 500, 5, 5, 1000, 75, 25, 3};
@@ -105,8 +136,9 @@ int main(void) {
                 BeginDrawing();
                 ClearBackground(BLACK);
 
-                DrawText("Welcome to my game!", 300, 350, 30, WHITE);
-                DrawText("Press SPACE to start", 300, 400, 20, WHITE);
+                DrawText("Welcome to my Raylib Breakout game!", 200, 250, 30, WHITE);
+                DrawText("Made by Christoffer Rozenbachs", 200, 300, 20, WHITE);
+                DrawText("Press SPACE to start", 200, 350, 20, WHITE);
 
                 if (IsKeyPressed(KEY_SPACE)){
                     start_menu = false;
@@ -308,8 +340,8 @@ int main(void) {
                     ball.position.y = 200;
                     player.position.x = 350;
                     player.position.y = 500;
-                    rows = 3;
-                    cols = 3;
+                    rows = start_rows;
+                    cols = start_cols;
                     ball.speed = 8;
                     active_blocks = rows * cols;
                     break; // Exit the loop
@@ -347,8 +379,8 @@ int main(void) {
                     active_blocks = rows * cols;
                     ball.speed++;
                     if(rows == 0){
-                        rows = 3;
-                        cols = 3;
+                        rows = start_rows;
+                        cols = start_cols;
                         active_blocks = rows * cols;
                     }
                     break; // Exit the loop
@@ -397,7 +429,7 @@ int main(void) {
         //High Score
         char high_point[25];
         sprintf(high_point, "High Score: %d", high_score);
-        DrawText(high_point, 625, 550, 20, DARKGRAY);
+        DrawText(high_point, 585, 550, 20, DARKGRAY);
 
 
         //Drawing of active Rectangles
@@ -438,7 +470,7 @@ int main(void) {
         if (debuff_active){
         char duration_time_array[21];
         float time_left = duration - debuff_time ;
-        sprintf(duration_time_array, "Buff timer: %.2f", time_left);
+        sprintf(duration_time_array, "Slow down time: %.2f", time_left);
         DrawText(duration_time_array, 300, 400, 20, WHITE); // Show "TEST" during the debuff
         }
 
