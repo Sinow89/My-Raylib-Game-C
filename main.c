@@ -13,13 +13,9 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 
 //------------------------TO-DO---------------------------------------------//
 //1. Fix collision on blocks.
-//2. Refactor and create methods for the game states instead.
+//2. Refactor and create methods for reset states for cleared level and game over instead.
 //3. Fix so when rows decrement also the randomize powerups blocks also decrements.
-
-// #define RED_ROWS 1 // Number of lines
-// #define RED_COLS 1 // Number of columns
-// #define BLUE_ROWS 2 // Number of lines
-// #define BLUE_COLS 2 // Number of columns
+//4. Make header files of the game logic instead.
 
 typedef struct{
     Vector2 position;
@@ -65,8 +61,6 @@ void write_new_high_score(int score){
         }
 }
 
-
-
 void randomize_powerup_blocks(int *RED_ROWS, int *RED_COLS, int *BLUE_ROWS, int *BLUE_COLS){
         for (int i = 0; i < 4; i++) { 
         *RED_ROWS = (rand() % 4) + 1; 
@@ -78,7 +72,6 @@ void randomize_powerup_blocks(int *RED_ROWS, int *RED_COLS, int *BLUE_ROWS, int 
     }
 
 }
-
 
 int main(void) {
     // Initialize start up variabels.
@@ -106,17 +99,6 @@ int main(void) {
     int RED_ROWS, RED_COLS, BLUE_ROWS, BLUE_COLS;
 
     randomize_powerup_blocks(&RED_ROWS, &RED_COLS, &BLUE_ROWS, &BLUE_COLS);
-
-    // for (int i = 0; i < 4; i++) {  // Loop 10 times as an example
-    //     RED_ROWS = (rand() % 4) + 1;  // Generate numbers between 1 and 50
-    //     BLUE_ROWS = (rand() % 4) + 1;
-    // }
-    //     for (int i = 0; i < 10; i++) {  // Loop 10 times as an example
-    //     RED_COLS = (rand() % 9) + 1;
-    //     BLUE_COLS = (rand() % 9) + 1;
-    // }
-
-
 
     // Initialize the player and ball.
     player_t player = {350, 500, 5, 5, 1000, 75, 25, 3};
@@ -461,7 +443,6 @@ int main(void) {
 
         //Draw the ball and set the speed of ball.
         DrawCircleV(ball.position, ball.radius, BLUE);
-
 
         //Debuff system
         if (debuff_active) {
