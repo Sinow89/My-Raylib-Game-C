@@ -14,8 +14,6 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 //1. Fix collision on blocks.
 //2. Refactor and create methods for the game states instead.
 
-#define ROWS 2 // Number of lines
-#define COLS 5 // Number of columns
 #define RED_ROWS 1 // Number of lines
 #define RED_COLS 1 // Number of columns
 #define BLUE_ROWS 2 // Number of lines
@@ -147,7 +145,7 @@ int main(void) {
             }
         }
 
-        //Ball collision logic with blocks and red powerup block
+        //Ball collision logic with blocks and red and blue powerup block
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (blocks[i][j].active) {
@@ -168,8 +166,8 @@ int main(void) {
                     }
                     if (i == BLUE_ROWS && j == BLUE_COLS){
                     
-                    Rectangle red_block = {blocks[BLUE_ROWS][BLUE_COLS].position.x+30, blocks[BLUE_ROWS][BLUE_COLS].position.y+30, block.size.x, block.size.y};
-                            if (CheckCollisionCircleRec(ball.position, ball.radius, red_block)) {
+                    Rectangle blue_block = {blocks[BLUE_ROWS][BLUE_COLS].position.x+30, blocks[BLUE_ROWS][BLUE_COLS].position.y+30, block.size.x, block.size.y};
+                            if (CheckCollisionCircleRec(ball.position, ball.radius, blue_block)) {
                                 ball.velocity.y = -ball.velocity.y;
                                 blocks[BLUE_ROWS][BLUE_COLS].lives--;
                             
@@ -208,7 +206,7 @@ int main(void) {
         if (IsKeyPressed(KEY_SPACE))
         {
             pause = !pause;
-        }    
+        }  
 
         // if(IsKeyDown(KEY_W) && player.position.y >= 0)
         // {
@@ -252,8 +250,15 @@ int main(void) {
         DrawText(debugText, 10, 70, 20, DARKGRAY);
 
         // Add block lives to debug output
-        sprintf(debugText, "Block Lives: %d", blocks[0][0].lives);
-        DrawText(debugText, 10, 400, 20, DARKGRAY);
+        char test[21];
+        sprintf(test, "active_blocks: %d", active_blocks);
+        DrawText(test, 10, 350, 20, DARKGRAY);
+        sprintf(test, "debuff_active: %d", debuff_active);
+        DrawText(test, 10, 400, 20, DARKGRAY);
+        sprintf(test, "blue blocks: %d", blocks[BLUE_ROWS][BLUE_COLS].active);
+        DrawText(test, 10, 450, 20, DARKGRAY);
+        sprintf(test, "blue lives: %d", blocks[BLUE_ROWS][BLUE_COLS].lives);
+        DrawText(test, 10, 500, 20, DARKGRAY);
 
         DrawFPS(700, 500);
         } 
@@ -274,7 +279,7 @@ int main(void) {
         {
             while (true){ 
                 BeginDrawing();
-                ClearBackground(BLACK); // Optional: Clear the screen for better visibility
+                ClearBackground(BLACK);
 
                 DrawText("Game Over!", 200, 300, 20, WHITE);
                 DrawText("Press SPACE to Restart", 200, 350, 20, WHITE);
@@ -290,6 +295,7 @@ int main(void) {
                     rows = 3;
                     cols = 3;
                     ball.speed = 8;
+                    active_blocks = rows * cols;
                     break; // Exit the loop
                     
                 }
@@ -401,18 +407,22 @@ int main(void) {
         //Draw the ball and set the speed of ball.
         DrawCircleV(ball.position, ball.radius, BLUE);
 
+
+        //Debuff system
         if (debuff_active) {
             debuff_time += delta_time;
             ball.speed = 2;
             if (debuff_time >= duration) {
                 ball.speed = 8;
                 debuff_active = false;
+                debuff_time = 0;
             }
         }
 
         if (debuff_active){
         char duration_time_array[21];
-        sprintf(duration_time_array, "Buff timer: %f", debuff_time);
+        float time_left = duration - debuff_time ;
+        sprintf(duration_time_array, "Buff timer: %.2f", time_left);
         DrawText(duration_time_array, 300, 400, 20, WHITE); // Show "TEST" during the debuff
         }
 
