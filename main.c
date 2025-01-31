@@ -18,6 +18,8 @@ zig cc -I"C:/raylib/include" -L"C:/raylib/lib" -o "MyGame.exe" main.c -lraylib -
 #define COLS 5 // Number of columns
 #define RED_ROWS 1 // Number of lines
 #define RED_COLS 1 // Number of columns
+#define BLUE_ROWS 2 // Number of lines
+#define BLUE_COLS 2 // Number of columns
 
 typedef struct{
     Vector2 position;
@@ -25,8 +27,6 @@ typedef struct{
     int lives;
     bool active;
 } block_t;
-
-// block_t blocks[ROWS][COLS];
 
 typedef struct{
     Vector2 position;
@@ -66,16 +66,20 @@ void write_new_high_score(int score){
 }
 
 int main(void) {
-    // Initialize the window.
+    // Initialize start up variabels.
     const int screen_width = 800;
     const int screen_height = 600;
     bool debug_menu = false; 
     bool pause = true;
     bool lost_life = false;
+    bool debuff_active = false;
     int score = 0;
     int rows = 3; 
     int cols = 3;
     int active_blocks = rows * cols;
+    float duration = 3.0f;
+    float elapsed_time = 0.0f;
+    float debuff_time = 0.0f;
     SetTargetFPS(60);
     InitWindow(screen_width, screen_height, "RaylibGame");
 
@@ -159,6 +163,22 @@ int main(void) {
                                 score = score + 100;
                                 --active_blocks;
                                 ++player.lives;
+                            }
+                         }
+                    }
+                    if (i == BLUE_ROWS && j == BLUE_COLS){
+                    
+                    Rectangle red_block = {blocks[BLUE_ROWS][BLUE_COLS].position.x+30, blocks[BLUE_ROWS][BLUE_COLS].position.y+30, block.size.x, block.size.y};
+                            if (CheckCollisionCircleRec(ball.position, ball.radius, red_block)) {
+                                ball.velocity.y = -ball.velocity.y;
+                                blocks[BLUE_ROWS][BLUE_COLS].lives--;
+                            
+                            if (blocks[BLUE_ROWS][BLUE_COLS].lives == 0) {
+                                blocks[BLUE_ROWS][BLUE_COLS].active = false;
+                                score = score + 100;
+                                --active_blocks;
+                                debuff_time += delta_time;
+                                debuff_active = true;
                             }
                          }
                     }
@@ -269,6 +289,7 @@ int main(void) {
                     player.position.y = 500;
                     rows = 3;
                     cols = 3;
+                    ball.speed = 8;
                     break; // Exit the loop
                     
                 }
@@ -302,6 +323,7 @@ int main(void) {
                     player.position.y = 500;
                     --rows;
                     active_blocks = rows * cols;
+                    ball.speed++;
                     if(rows == 0){
                         rows = 3;
                         cols = 3;
@@ -363,6 +385,9 @@ int main(void) {
                     if (i == RED_ROWS && j == RED_COLS){
                         DrawRectangle(blocks[RED_ROWS][RED_COLS].position.x+30, blocks[RED_ROWS][RED_COLS].position.y+30, 70, 20, RED);
                     }
+                    else if (i == BLUE_ROWS && j == BLUE_COLS){
+                        DrawRectangle(blocks[BLUE_ROWS][BLUE_COLS].position.x+30, blocks[BLUE_ROWS][BLUE_COLS].position.y+30, 70, 20, BLUE);
+                    }
                     else
                     DrawRectangle(blocks[i][j].position.x+30, blocks[i][j].position.y+30, 70, 20, GRAY);
                 }
@@ -375,6 +400,21 @@ int main(void) {
 
         //Draw the ball and set the speed of ball.
         DrawCircleV(ball.position, ball.radius, BLUE);
+
+        if (debuff_active) {
+            debuff_time += delta_time;
+            ball.speed = 2;
+            if (debuff_time >= duration) {
+                ball.speed = 8;
+                debuff_active = false;
+            }
+        }
+
+        if (debuff_active){
+        char duration_time_array[21];
+        sprintf(duration_time_array, "Buff timer: %f", debuff_time);
+        DrawText(duration_time_array, 300, 400, 20, WHITE); // Show "TEST" during the debuff
+        }
 
         EndDrawing();
     }
